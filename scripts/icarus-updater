@@ -1,0 +1,72 @@
+#!/bin/bash
+. "$(dirname "$0")/common"
+
+pidfile=$icarus_updater_pidfile
+
+main() {
+    debug "updater started"
+    if (set -o noclobber; echo $$ > "$pidfile") 2> /dev/null; then
+        trap shutdown SIGINT SIGTERM
+        verify_cpu_mhz
+        update
+    else
+        info "Found existing PID file - checking process"
+        check_lock $pidfile
+    fi
+}
+
+update() {
+    local logfile
+
+    logfile="$(mktemp)"
+    info "downloading/updating/validating icarus server from Steam"
+    if ! download_icarus; then
+        if [ -f "$download_path/$icarus_binary_path" ]; then
+            error "Failed to update icarus server from Steam - however an existing version was found locally - using it"
+        else
+            error "Failed to download icarus server from Steam - retrying later - check your networking and volume access permissions"
+            return
+        fi
+    fi
+    rsync -a --itemize-changes --delete --no-times --exclude steamapps --exclude Icarus/Binaries/Win64/appcache --exclude Icarus/Binaries/Win64/.sentry-native --exclude Icarus/Binaries/Win64/logs --exclude Icarus/Binaries/Win64/config "$download_path/" "$install_path" | tee "$logfile"
+    if grep '^[*>]' "$logfile" > /dev/null 2>&1; then
+        info "icarus server was updated - restarting"
+        supervisorctl restart icarus-server
+    else
+        info "icarus server is already the latest version"
+        if ! check_running "icarus-server"; then
+            info "icarus server is not running - starting it"
+            supervisorctl start icarus-server
+        fi
+    fi
+    rm -f "$logfile"
+    clear_lock "$pidfile"
+}
+
+download_icarus() {
+    $steamcmd_path +@sSteamCmdForcePlatformType windows +force_install_dir "$download_path" +login anonymous +app_update $steam_app_id ${STEAMCMD_ARGS:--beta "public" validate} +quit
+}
+
+# This works around the `Unable to determine CPU Frequency. Try defining CPU_MHZ.` steamcmd issue (#184).
+verify_cpu_mhz() {
+    local float_regex
+    local cpu_mhz
+    float_regex="^([0-9]+\\.?[0-9]*)\$"
+    cpu_mhz=$(grep "^cpu MHz" /proc/cpuinfo | head -1 | cut -d : -f 2 | xargs)
+    if [ -n "$cpu_mhz" ] && [[ "$cpu_mhz" =~ $float_regex ]] && [ "${cpu_mhz%.*}" -gt 0 ]; then
+        debug "Found CPU with $cpu_mhz MHz"
+        unset CPU_MHZ
+    else
+        debug "Unable to determine CPU Frequency - setting a default of 1.5 GHz so steamcmd won't complain"
+        export CPU_MHZ="1500.000"
+    fi
+}
+
+shutdown() {
+    debug "Received signal to shut down icarus-updater"
+    clear_lock "$pidfile"
+}
+
+
+
+main

@@ -1,0 +1,55 @@
+#!/bin/bash
+. "$(dirname "$0")/common"
+
+main() {
+    apply_permissions
+    setup_syslog
+    exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+}
+
+
+# Apply user id and group id
+apply_permissions() {
+    info "Setting uid:gid of icarus to $PUID:$PGID"
+    groupmod -g "${PGID}" -o icarus
+    #usermod -u "${PUID}" -o -g icarus icarus
+    sed -i -E "s/^(icarus:x):[0-9]+:[0-9]+:(.*)/\\1:$PUID:$PGID:\\2/" /etc/passwd
+
+    chown -R icarus:icarus \
+        /opt/icarus \
+        /home/icarus \
+        /var/run/icarus
+    chgrp icarus /etc/supervisor/supervisord.conf
+}
+
+# Configure syslog
+setup_syslog() {
+    info "Setting up syslogd - logging to stdout"
+
+     cat > /etc/rsyslog.d/stdout.conf <<EOF
+# Actions
+# These may require root
+\$FileOwner root
+\$FileGroup root
+\$PrivDropToUser root
+\$PrivDropToGroup root
+
+*.* /proc/self/fd/1          # send everything to stdout
+EOF
+
+    cat > "$supervisor_syslog_conf" <<EOF
+[program:rsyslogd]
+user=root
+environment=HOME="/root",USER="root",LANG="en_US.UTF-8",PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+command=/usr/sbin/rsyslogd -n
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+autostart=true
+autorestart=true
+priority=10
+EOF
+}
+
+main

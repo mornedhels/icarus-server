@@ -1,0 +1,20 @@
+#!/bin/bash
+. "$(dirname "$0")/common"
+
+mkdir -p "$download_path"
+mkdir -p "$install_path"
+
+# Create crontabs
+crontab=$(mktemp)
+
+if [ -n "$UPDATE_CRON" ]; then
+  debug "creating cron for update checks (schedule: $UPDATE_CRON)"
+  echo "$UPDATE_CRON supervisorctl start icarus-updater" >> "$crontab"
+fi
+
+crontab "$crontab"
+rm -f "$crontab"
+
+supervisorctl start icarus-updater
+
+exit 0

@@ -1,0 +1,20 @@
+version: "3"
+services:
+  satisfactory:
+    build: .
+    container_name: icarus
+    hostname: icarus
+    ports:
+      - "17777:17777/udp"
+      - "27015:27015/udp"
+    volumes:
+      - ./data:/home/icarus/.wine/drive_c/icarus
+      - ./game:/opt/icarus
+    environment:
+      - SERVERNAME=MornedhelsTest
+      - PORT=17777
+      - QUERYPORT=27015
+      - PUID=501
+      - PGID=501
+      - STEAM_ASYNC_TIMEOUT=60
+    restart: unless-stopped
