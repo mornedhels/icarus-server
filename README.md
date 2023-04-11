@@ -40,7 +40,7 @@ startup and automatic updates.
 ```yaml
 version: "3"
 services:
-  satisfactory:
+  icarus:
     image: fabiryn/icarus-server:latest
     container_name: icarus
     hostname: icarus
