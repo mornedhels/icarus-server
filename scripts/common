@@ -7,7 +7,7 @@ icarus_binary_path=Icarus/Binaries/Win64/IcarusServer-Win64-Shipping.exe
 
 PUID=${PUID:-4711}
 PGID=${PGID:-4711}
-UPDATE_CRON=${UPDATE_CRON:-*/2 * * * *}
+UPDATE_CRON=${UPDATE_CRON:-*/30 * * * *}
 
 # trap SIGUSR1 as it is being used to check
 # for process aliveness when an existing
