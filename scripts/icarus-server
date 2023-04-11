@@ -91,7 +91,7 @@ initIcarusConfig() {
       echo 'AsyncTaskTimeout=' >> ${configPath}/Engine.ini
   fi
 
-  sedCommand='/AsyncTaskTimeout=/c\AsyncTaskTimeout='${STEAM_ASYNC_TIMEOUT}
+  sedCommand='/AsyncTaskTimeout=/c\AsyncTaskTimeout='${STEAM_ASYNC_TIMEOUT:-60}
   sed -i "${sedCommand}" ${configPath}/Engine.ini
 }
 
