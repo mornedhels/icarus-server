@@ -104,8 +104,8 @@ check_running() {
   proc=$1
   status=$(supervisorctl status "${proc}" 2>&1)
   if [[ "$status" == *RUNNING* ]]; then
-    return 1
-  else
     return 0
+  else
+    return 1
   fi
 }

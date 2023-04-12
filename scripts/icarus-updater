@@ -28,7 +28,7 @@ update() {
             return
         fi
     fi
-    rsync -a --itemize-changes --delete --no-times --exclude steamapps --exclude Icarus/Binaries/Win64/appcache --exclude Icarus/Binaries/Win64/.sentry-native --exclude Icarus/Binaries/Win64/logs --exclude Icarus/Binaries/Win64/config "$download_path/" "$install_path" | tee "$logfile"
+    rsync -a --itemize-changes --delete --exclude steamapps --exclude Icarus/Binaries/Win64/appcache --exclude Icarus/Binaries/Win64/.sentry-native --exclude Icarus/Binaries/Win64/logs --exclude Icarus/Binaries/Win64/config "$download_path/" "$install_path" | tee "$logfile"
     if grep '^[*>]' "$logfile" > /dev/null 2>&1; then
         info "icarus server was updated - restarting"
         supervisorctl restart icarus-server

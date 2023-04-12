@@ -34,7 +34,7 @@ run_server() {
     initIcarusConfig
 
     chmod +x "$icarus_server"
-    wine "$icarus_server" -Log -UserDir='C:\icarus' -SteamServerName="${SERVERNAME:-ICARUS Server}" -PORT="${PORT:-17777}" -QueryPort="${QUERYPORT:-27015}"
+    wine "$icarus_server" -Log -UserDir='C:\icarus' -SteamServerName="${SERVERNAME:-ICARUS Server}" -PORT="${PORT:-17777}" -QueryPort="${QUERYPORT:-27015}" &
     icarus_server_pid=$!
     echo $icarus_server_pid > "$icarus_server_pidfile"
 
