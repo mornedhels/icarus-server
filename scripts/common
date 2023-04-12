@@ -2,12 +2,15 @@
 download_path=/opt/icarus/download/server
 install_path=/opt/icarus/server
 steamcmd_path=/usr/bin/steamcmd
+data_path=/home/icarus/.wine/drive_c/icarus
 steam_app_id=2089300
 icarus_binary_path=Icarus/Binaries/Win64/IcarusServer-Win64-Shipping.exe
 
 PUID=${PUID:-4711}
 PGID=${PGID:-4711}
 UPDATE_CRON=${UPDATE_CRON:-*/30 * * * *}
+CLEANUP_CRON=${CLEANUP_CRON:-}
+CLEANUP_DAYS=${CLEANUP_DAYS:-1}
 
 # trap SIGUSR1 as it is being used to check
 # for process aliveness when an existing

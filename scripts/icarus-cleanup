@@ -1,0 +1,24 @@
+#!/bin/bash
+. "$(dirname "$0")/common"
+
+main() {
+  info "Running icarus-cleanup"
+  cleanupProspects
+  info "Cleanup complete"
+  exit 0
+}
+
+function cleanupProspects {
+  local prospectFiles
+  prospectFiles=$(find $data_path/Saved/PlayerData/DedicatedServer/Prospects -name '*.json')
+  for prospect in $prospectFiles; do
+    if [[ $(cat $prospect | jq '.ProspectInfo.AssociatedMembers | length') -eq 0 && $(find $prospect -type f -mtime +$CLEANUP_DAYS) ]]; then
+      local filename
+      filename=$(basename -- "$prospect")
+      info "Removing prospect $filename"
+      #rm -f ../data/Saved/PlayerData/DedicatedServer/Prospects/${filename%.*}*
+    fi
+  done
+}
+
+main

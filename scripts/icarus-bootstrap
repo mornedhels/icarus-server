@@ -12,6 +12,11 @@ if [ -n "$UPDATE_CRON" ]; then
   echo "$UPDATE_CRON supervisorctl start icarus-updater" >> "$crontab"
 fi
 
+if [ -n "$CLEANUP_CRON" ]; then
+  debug "creating cron for cleanup (schedule: $CLEANUP_CRON)"
+  echo "$CLEANUP_CRON supervisorctl start icarus-cleanup" >> "$crontab"
+fi
+
 crontab "$crontab"
 rm -f "$crontab"
 

@@ -8,16 +8,18 @@ startup and automatic updates.
 
 ## Environment Variables
 
-| Variable              | Default         | Description                                               |
-|-----------------------|-----------------|-----------------------------------------------------------|
-| `SERVERNAME`          | `ICARUS Server` | The name of the server                                    |
-| `SERVER_PASSWORD`     | `-`             | The password for the server                               |
-| `PORT`                | `17777`         | The game port for the server                              |
-| `QUERYPORT`           | `27015`         | The steam query port for the server                       |
-| `UPDATE_CRON`         | `*/30 * * * *`  | Update check cron interval (defaults to every 30 minutes) |
-| `PUID`                | `4711`          | The UID to run server as                                  |
-| `PGID`                | `4711`          | The GID to run server as                                  |
-| `STEAM_ASYNC_TIMEOUT` | `60`            | Sets AsyncTaskTimeout in Engine.ini                       |
+| Variable                 | Default         | Description                                                                   |
+|--------------------------|-----------------|-------------------------------------------------------------------------------|
+| `SERVERNAME`             | `ICARUS Server` | The name of the server                                                        |
+| `SERVER_PASSWORD` ⚠️ WIP | `-`             | The password for the server                                                   |
+| `PORT`                   | `17777`         | The game port for the server                                                  |
+| `QUERYPORT`              | `27015`         | The steam query port for the server                                           |
+| `UPDATE_CRON`            | `*/30 * * * *`  | Update check cron interval (defaults to every 30 minutes)                     |
+| `CLEANUP_CRON` ⚠️ WIP    | `-`             | Cleanup old prospects cron (checks if all players left the prospect)          |
+| `CLEANUP_DAYS` ⚠️ WIP    | `1`             | Cleanup older prospects than x days (checks if all players left the prospect) |
+| `PUID`                   | `4711`          | The UID to run server as                                                      |
+| `PGID`                   | `4711`          | The GID to run server as                                                      |
+| `STEAM_ASYNC_TIMEOUT`    | `60`            | Sets AsyncTaskTimeout in Engine.ini                                           |
 
 ## Ports
 
