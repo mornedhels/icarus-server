@@ -8,18 +8,29 @@ startup and automatic updates.
 
 ## Environment Variables
 
-| Variable                 | Default         | Description                                                                   |
-|--------------------------|-----------------|-------------------------------------------------------------------------------|
-| `SERVERNAME`             | `ICARUS Server` | The name of the server                                                        |
-| `SERVER_PASSWORD` ⚠️ WIP | `-`             | The password for the server                                                   |
-| `PORT`                   | `17777`         | The game port for the server                                                  |
-| `QUERYPORT`              | `27015`         | The steam query port for the server                                           |
-| `UPDATE_CRON`            | `*/30 * * * *`  | Update check cron interval (defaults to every 30 minutes)                     |
-| `CLEANUP_CRON` ⚠️ WIP    | `-`             | Cleanup old prospects cron (checks if all players left the prospect)          |
-| `CLEANUP_DAYS` ⚠️ WIP    | `1`             | Cleanup older prospects than x days (checks if all players left the prospect) |
-| `PUID`                   | `4711`          | The UID to run server as                                                      |
-| `PGID`                   | `4711`          | The GID to run server as                                                      |
-| `STEAM_ASYNC_TIMEOUT`    | `60`            | Sets AsyncTaskTimeout in Engine.ini                                           |
+|    | Variable                         | Default                          | Description                                                                     |
+|:--:|----------------------------------|----------------------------------|---------------------------------------------------------------------------------|
+|    | `SERVER_NAME`                    | `ICARUS Server`                  | The name of the server                                                          |
+| ⚠️ | `SERVER_PASSWORD`                |                                  | The password for the server                                                     |
+| ⚠️ | `SERVER_ADMIN_PASSWORD`          |                                  | The password for the admin login                                                |
+| ⚠️ | `SERVER_MAX_PLAYERS`             | `8`                              | Max allowed players                                                             |
+|    | `PORT`                           | `17777`                          | The game port for the server                                                    |
+|    | `QUERYPORT`                      | `27015`                          | The steam query port for the server                                             |
+| ⚠️ | `SERVER_SHUTDOWN_IF_NOT_JOINED`  | `300.000000`                     | Number of seconds until started prospect returns to lobby mode                  |
+| ⚠️ | `SERVER_SHUTDOWN_IF_EMPTY`       | `60.000000`                      | Number of seconds until server returns to lobby mode after last prospector left |
+| ⚠️ | `SERVER_ALLOW_NON_ADMINS_LAUNCH` | `True`                           | Allows all prospectors to select prospect in lobby mode                         |
+| ⚠️ | `SERVER_ALLOW_NON_ADMINS_DELETE` | `False`                          | Allows all prospectors to delete prospects in lobby mode                        |
+| ⚠️ | `SERVER_RESUME_PROSPECT`         | `True`                           | After a server restart, resume last prospect                                    |
+| ⚠️ | `GAME_BRANCH`                    | `public`                         | Steam branch of the ICARUS server                                               |
+|    | `ASYNC_TASK_TIMEOUT`             | `60`                             | Sets AsyncTaskTimeout in Engine.ini                                             |
+|    | `PUID`                           | `4711`                           | The UID to run server as                                                        |
+|    | `PGID`                           | `4711`                           | The GID to run server as                                                        |
+|    | `UPDATE_CRON`                    | `*/30 * * * *`                   | Update check cron interval (defaults to every 30 minutes)                       |
+| ⚠️ | `CLEANUP_CRON`                   | `-`                              | Cleanup old prospects cron (checks if all players left the prospect)            |
+| ⚠️ | `CLEANUP_DAYS`                   | `1`                              | Cleanup older prospects than x days (checks if all players left the prospect)   |
+| ⚠️ | `STEAMCMD_ARGS`                  | `--beta "$GAME_BRANCH" validate` | Additional steamcmd args for the updater                                        |
+
+⚠️: Work in Progress
 
 ## Ports
 
@@ -47,6 +58,7 @@ services:
     container_name: icarus
     hostname: icarus
     restart: unless-stopped
+    stop_grace_period: 30s
     ports:
       - "17777:17777/udp"
       - "27015:27015/udp"
@@ -54,7 +66,9 @@ services:
       - ./data:/home/icarus/.wine/drive_c/icarus
       - ./game:/opt/icarus
     environment:
-      - SERVERNAME=ICARUS Server
+      - SERVER_NAME=ICARUS Server
+      - SERVER_PASSWORD=secret
+      - SERVER_ADMIN_PASSWORD=evenmoresecret
       - PORT=17777
       - QUERYPORT=27015
       - PUID=4711

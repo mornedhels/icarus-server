@@ -1,5 +1,6 @@
 #!/bin/bash
 . "$(dirname "$0")/common"
+. "$(dirname "$0")/defaults"
 
 main() {
   info "Running icarus-cleanup"

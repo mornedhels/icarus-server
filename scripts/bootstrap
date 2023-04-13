@@ -1,32 +1,32 @@
 #!/bin/bash
 . "$(dirname "$0")/common"
+. "$(dirname "$0")/defaults"
 
 main() {
-    apply_permissions
-    setup_syslog
-    exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+  apply_permissions
+  setup_syslog
+  exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 }
-
 
 # Apply user id and group id
 apply_permissions() {
-    info "Setting uid:gid of icarus to $PUID:$PGID"
-    groupmod -g "${PGID}" -o icarus
-    #usermod -u "${PUID}" -o -g icarus icarus
-    sed -i -E "s/^(icarus:x):[0-9]+:[0-9]+:(.*)/\\1:$PUID:$PGID:\\2/" /etc/passwd
+  info "Setting uid:gid of icarus to $PUID:$PGID"
+  groupmod -g "${PGID}" -o icarus
+  usermod -u "${PUID}" -o icarus
+  sed -i -E "s/^(icarus:x):[0-9]+:[0-9]+:(.*)/\\1:$PUID:$PGID:\\2/" /etc/passwd
 
-    chown -R icarus:icarus \
-        /opt/icarus \
-        /home/icarus \
-        /var/run/icarus
-    chgrp icarus /etc/supervisor/supervisord.conf
+  chown -R icarus:icarus \
+    /opt/icarus \
+    /home/icarus \
+    /var/run/icarus
+  chgrp icarus /etc/supervisor/supervisord.conf
 }
 
 # Configure syslog
 setup_syslog() {
-    info "Setting up syslogd - logging to stdout"
+  info "Setting up syslogd - logging to stdout"
 
-     cat > /etc/rsyslog.d/stdout.conf <<EOF
+  cat >/etc/rsyslog.d/stdout.conf <<EOF
 # Actions
 # These may require root
 \$FileOwner root
@@ -37,7 +37,7 @@ setup_syslog() {
 *.* /proc/self/fd/1          # send everything to stdout
 EOF
 
-    cat > "$supervisor_syslog_conf" <<EOF
+  cat >"$supervisor_syslog_conf" <<EOF
 [program:rsyslogd]
 user=root
 environment=HOME="/root",USER="root",LANG="en_US.UTF-8",PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"

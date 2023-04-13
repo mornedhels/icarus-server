@@ -3,14 +3,9 @@ download_path=/opt/icarus/download/server
 install_path=/opt/icarus/server
 steamcmd_path=/usr/bin/steamcmd
 data_path=/home/icarus/.wine/drive_c/icarus
+config_path=$data_path/Saved/Config/WindowsServer
 steam_app_id=2089300
 icarus_binary_path=Icarus/Binaries/Win64/IcarusServer-Win64-Shipping.exe
-
-PUID=${PUID:-4711}
-PGID=${PGID:-4711}
-UPDATE_CRON=${UPDATE_CRON:-*/30 * * * *}
-CLEANUP_CRON=${CLEANUP_CRON:-}
-CLEANUP_DAYS=${CLEANUP_DAYS:-1}
 
 # trap SIGUSR1 as it is being used to check
 # for process aliveness when an existing
@@ -33,72 +28,76 @@ critical=10
 fatal=5
 log_level=${log_level:-$debug}
 
-debug()    { logstd $debug    "DEBUG - [$$] - $*"; }
-info()     { logstd $info     "INFO - $*"; }
-warn()     { logstd $warn     "WARN - $*"; }
-error()    { logerr $error    "ERROR - $*"; }
+debug() { logstd $debug "DEBUG - [$$] - $*"; }
+info() { logstd $info "INFO - $*"; }
+warn() { logstd $warn "WARN - $*"; }
+error() { logerr $error "ERROR - $*"; }
 critical() { logerr $critical "CRITIAL - $*"; }
-fatal()    { logerr $fatal    "FATAL - $*"; exit 1; }
-
+fatal() {
+  logerr $fatal "FATAL - $*"
+  exit 1
+}
 
 logstd() {
-    local log_at_level
-    log_at_level="$1"; shift
-    printline "$log_at_level" "$*"
+  local log_at_level
+  log_at_level="$1"
+  shift
+  printline "$log_at_level" "$*"
 }
-
 
 logerr() {
-    local log_at_level
-    log_at_level="$1"; shift
-    printline "$log_at_level" "$*" >&2
+  local log_at_level
+  log_at_level="$1"
+  shift
+  printline "$log_at_level" "$*" >&2
 }
 
-
 printline() {
-    local log_at_level
-    local log_data
-    log_at_level="$1"; shift
-    log_data="$*"
+  local log_at_level
+  local log_data
+  log_at_level="$1"
+  shift
+  log_data="$*"
 
-    if [ "$log_at_level" -le "$log_level" ]; then
-        echo "$log_data"
-    fi
+  if [ "$log_at_level" -le "$log_level" ]; then
+    echo "$log_data"
+  fi
 }
 
 check_lock() {
-    local pidfile
-    local predecessor_pid
-    local numre
-    pidfile=$1
-    predecessor_pid=$(<"$pidfile")
-    numre='^[0-9]+$'
-    if [[ "$predecessor_pid" =~ $numre ]] ; then
-        debug "Sending SIGUSR1 to PID $predecessor_pid"
-        if kill -USR1 "$predecessor_pid" &> /dev/null; then
-            fatal "Process with PID $predecessor_pid already running - exiting"
-        else
-            info "Removing stale PID file and starting run"
-            clear_lock_and_run "$pidfile"
-        fi
+  local pidfile
+  local predecessor_pid
+  local numre
+  pidfile=$1
+  predecessor_pid=$(<"$pidfile")
+  numre='^[0-9]+$'
+  if [[ "$predecessor_pid" =~ $numre ]]; then
+    debug "Sending SIGUSR1 to PID $predecessor_pid"
+    if kill -USR1 "$predecessor_pid" &>/dev/null; then
+      fatal "Process with PID $predecessor_pid already running - exiting"
     else
-        warn "Predecessor PID is corrupt - clearing lock and running"
-        clear_lock_and_run "$pidfile"
+      info "Removing stale PID file and starting run"
+      clear_lock_and_run "$pidfile"
     fi
+  else
+    warn "Predecessor PID is corrupt - clearing lock and running"
+    clear_lock_and_run "$pidfile"
+  fi
 }
 
 clear_lock_and_run() {
-    local pidfile
-    pidfile=$1
-    clear_lock "$pidfile"
-    main
+  local pidfile
+  pidfile=$1
+  clear_lock "$pidfile"
+  main
 }
 
 clear_lock() {
-    local pidfile
-    pidfile=$1
-    info "Releasing PID file $pidfile"
-    rm -f "$1"
+  local pidfile
+  pidfile=$1
+  info "Releasing PID file $pidfile"
+  kill -SIGTERM $pidfile 2>/dev/null
+  rm -f "$1"
 }
 
 check_running() {

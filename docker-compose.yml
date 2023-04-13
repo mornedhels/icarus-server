@@ -4,6 +4,8 @@ services:
     build: .
     container_name: icarus
     hostname: icarus
+    restart: unless-stopped
+    stop_grace_period: 30s
     ports:
       - "17777:17777/udp"
       - "27015:27015/udp"
@@ -11,11 +13,10 @@ services:
       - ./data:/home/icarus/.wine/drive_c/icarus
       - ./game:/opt/icarus
     environment:
-      - SERVERNAME=MornedhelsTest
+      - SERVER_NAME=MornedhelsTest
       - PORT=17777
       - QUERYPORT=27015
       - PUID=501
       - PGID=501
       - UPDATE_CRON=*/30 * * * *
       - CLEANUP_CRON=*/10 * * * *
-    restart: unless-stopped
