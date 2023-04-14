@@ -38,11 +38,11 @@ updateOrCreateIcarusEngineConfig() {
   if [[ ! -e ${config_path}/Engine.ini ]]; then
     mkdir -p ${config_path}
     touch ${config_path}/Engine.ini
-  fi
 
-  if ! grep -Fxq "[OnlineSubsystemSteam]" ${config_path}/Engine.ini; then
-    echo '[OnlineSubsystemSteam]' >>${config_path}/Engine.ini
-    echo 'AsyncTaskTimeout=' >>${config_path}/Engine.ini
+    cat >${config_path}/Engine.ini <<EOF
+[OnlineSubsystemSteam]
+AsyncTaskTimeout=$ASYNC_TASK_TIMEOUT
+EOF
   fi
 
   sedCommand='/AsyncTaskTimeout=/c\AsyncTaskTimeout='${ASYNC_TASK_TIMEOUT}
@@ -52,7 +52,7 @@ updateOrCreateIcarusEngineConfig() {
 updateOrCreateIcarusServerSettings() {
   if [[ ! -e ${config_path}/ServerSettings.ini ]]; then
     mkdir -p ${config_path}
-    touch ${config_path}/Engine.ini
+    touch ${config_path}/ServerSettings.ini
 
     cat >${config_path}/ServerSettings.ini <<EOF
 [/Script/Icarus.DedicatedServerSettings]
