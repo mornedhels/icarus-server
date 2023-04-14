@@ -1,10 +1,14 @@
-# icarus-dedicated-server (WIP)
+# icarus-dedicated-server
 
-### ⚠️ ***Under Construction*** ⚠️
+[![Docker Pulls](https://img.shields.io/docker/pulls/fabiryn/icarus-server.svg)](https://hub.docker.com/r/fabiryn/icarus-server)
+[![Docker Stars](https://img.shields.io/docker/stars/fabiryn/icarus-server.svg)](https://hub.docker.com/r/fabiryn/icarus-server)
+[![Docker Image Size (tag)](https://img.shields.io/docker/image-size/fabiryn/icarus-server/latest)](https://hub.docker.com/r/fabiryn/icarus-server)
+
+
 
 Docker image for the game ICARUS.
 The image is based on the [steamcmd](https://hub.docker.com/r/cm2network/steamcmd/) image and uses supervisor to handle
-startup and automatic updates.
+startup, automatic updates and cleanup.
 
 ## Environment Variables
 
@@ -21,14 +25,14 @@ startup and automatic updates.
 | ⚠️ | `SERVER_ALLOW_NON_ADMINS_LAUNCH` | `True`                           | Allows all prospectors to select prospect in lobby mode                         |
 | ⚠️ | `SERVER_ALLOW_NON_ADMINS_DELETE` | `False`                          | Allows all prospectors to delete prospects in lobby mode                        |
 | ⚠️ | `SERVER_RESUME_PROSPECT`         | `True`                           | After a server restart, resume last prospect                                    |
-| ⚠️ | `GAME_BRANCH`                    | `public`                         | Steam branch of the ICARUS server                                               |
+|    | `GAME_BRANCH`                    | `public`                         | Steam branch of the ICARUS server                                               |
 |    | `ASYNC_TASK_TIMEOUT`             | `60`                             | Sets AsyncTaskTimeout in Engine.ini                                             |
 |    | `PUID`                           | `4711`                           | The UID to run server as                                                        |
 |    | `PGID`                           | `4711`                           | The GID to run server as                                                        |
 |    | `UPDATE_CRON`                    | `*/30 * * * *`                   | Update check cron interval (defaults to every 30 minutes)                       |
 | ⚠️ | `CLEANUP_CRON`                   | `-`                              | Cleanup old prospects cron (checks if all players left the prospect)            |
 | ⚠️ | `CLEANUP_DAYS`                   | `1`                              | Cleanup older prospects than x days (checks if all players left the prospect)   |
-| ⚠️ | `STEAMCMD_ARGS`                  | `--beta "$GAME_BRANCH" validate` | Additional steamcmd args for the updater                                        |
+|    | `STEAMCMD_ARGS`                  | `--beta "$GAME_BRANCH" validate` | Additional steamcmd args for the updater                                        |
 
 ⚠️: Work in Progress
 
