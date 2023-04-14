@@ -1,9 +1,9 @@
 # icarus-dedicated-server
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/fabiryn/icarus-server.svg)](https://hub.docker.com/r/fabiryn/icarus-server)
-[![Docker Stars](https://img.shields.io/docker/stars/fabiryn/icarus-server.svg)](https://hub.docker.com/r/fabiryn/icarus-server)
-[![Docker Image Size (tag)](https://img.shields.io/docker/image-size/fabiryn/icarus-server/latest)](https://hub.docker.com/r/fabiryn/icarus-server)
-
+[![Docker Pulls](https://img.shields.io/docker/pulls/mornedhels/icarus-server.svg)](https://hub.docker.com/r/mornedhels/icarus-server)
+[![Docker Stars](https://img.shields.io/docker/stars/mornedhels/icarus-server.svg)](https://hub.docker.com/r/mornedhels/icarus-server)
+[![Docker Image Size (tag)](https://img.shields.io/docker/image-size/mornedhels/icarus-server/latest)](https://hub.docker.com/r/mornedhels/icarus-server)
+[![GitHub](https://img.shields.io/github/license/mornedhels/icarus-dedicated-server)](https://github.com/mornedhels/icarus-server)
 
 
 Docker image for the game ICARUS.
@@ -15,16 +15,16 @@ startup, automatic updates and cleanup.
 |    | Variable                         | Default                          | Description                                                                     |
 |:--:|----------------------------------|----------------------------------|---------------------------------------------------------------------------------|
 |    | `SERVER_NAME`                    | `ICARUS Server`                  | The name of the server                                                          |
-| ⚠️ | `SERVER_PASSWORD`                |                                  | The password for the server                                                     |
-| ⚠️ | `SERVER_ADMIN_PASSWORD`          |                                  | The password for the admin login                                                |
-| ⚠️ | `SERVER_MAX_PLAYERS`             | `8`                              | Max allowed players                                                             |
+|    | `SERVER_PASSWORD`                |                                  | The password for the server                                                     |
+|    | `SERVER_ADMIN_PASSWORD`          |                                  | The password for the admin login                                                |
+|    | `SERVER_MAX_PLAYERS`             | `8`                              | Max allowed players                                                             |
 |    | `PORT`                           | `17777`                          | The game port for the server                                                    |
 |    | `QUERYPORT`                      | `27015`                          | The steam query port for the server                                             |
-| ⚠️ | `SERVER_SHUTDOWN_IF_NOT_JOINED`  | `300.000000`                     | Number of seconds until started prospect returns to lobby mode                  |
-| ⚠️ | `SERVER_SHUTDOWN_IF_EMPTY`       | `60.000000`                      | Number of seconds until server returns to lobby mode after last prospector left |
-| ⚠️ | `SERVER_ALLOW_NON_ADMINS_LAUNCH` | `True`                           | Allows all prospectors to select prospect in lobby mode                         |
-| ⚠️ | `SERVER_ALLOW_NON_ADMINS_DELETE` | `False`                          | Allows all prospectors to delete prospects in lobby mode                        |
-| ⚠️ | `SERVER_RESUME_PROSPECT`         | `True`                           | After a server restart, resume last prospect                                    |
+|    | `SERVER_SHUTDOWN_IF_NOT_JOINED`  | `300.000000`                     | Number of seconds until started prospect returns to lobby mode                  |
+|    | `SERVER_SHUTDOWN_IF_EMPTY`       | `60.000000`                      | Number of seconds until server returns to lobby mode after last prospector left |
+|    | `SERVER_ALLOW_NON_ADMINS_LAUNCH` | `True`                           | Allows all prospectors to select prospect in lobby mode                         |
+|    | `SERVER_ALLOW_NON_ADMINS_DELETE` | `False`                          | Allows all prospectors to delete prospects in lobby mode                        |
+|    | `SERVER_RESUME_PROSPECT`         | `True`                           | After a server restart, resume last prospect                                    |
 |    | `GAME_BRANCH`                    | `public`                         | Steam branch of the ICARUS server                                               |
 |    | `ASYNC_TASK_TIMEOUT`             | `60`                             | Sets AsyncTaskTimeout in Engine.ini                                             |
 |    | `PUID`                           | `4711`                           | The UID to run server as                                                        |
@@ -58,7 +58,7 @@ startup, automatic updates and cleanup.
 version: "3"
 services:
   icarus:
-    image: fabiryn/icarus-server:latest
+    image: mornedhels/icarus-server:latest
     container_name: icarus
     hostname: icarus
     restart: unless-stopped
