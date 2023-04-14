@@ -27,14 +27,12 @@ setup_syslog() {
   info "Setting up syslogd - logging to stdout"
 
   cat >/etc/rsyslog.d/stdout.conf <<EOF
-# Actions
-# These may require root
 \$FileOwner root
 \$FileGroup root
 \$PrivDropToUser root
 \$PrivDropToGroup root
 
-*.* /proc/self/fd/1          # send everything to stdout
+*.*;cron,auth,authpriv.none /proc/self/fd/1          # send everything to stdout
 EOF
 
   cat >"$supervisor_syslog_conf" <<EOF
