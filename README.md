@@ -1,9 +1,9 @@
-# icarus-dedicated-server
+# ICARUS-Dedicated-Server
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/mornedhels/icarus-server.svg)](https://hub.docker.com/r/mornedhels/icarus-server)
 [![Docker Stars](https://img.shields.io/docker/stars/mornedhels/icarus-server.svg)](https://hub.docker.com/r/mornedhels/icarus-server)
 [![Docker Image Size (tag)](https://img.shields.io/docker/image-size/mornedhels/icarus-server/latest)](https://hub.docker.com/r/mornedhels/icarus-server)
-[![GitHub](https://img.shields.io/github/license/mornedhels/icarus-dedicated-server)](https://github.com/mornedhels/icarus-server)
+[![GitHub](https://img.shields.io/github/license/mornedhels/icarus-server)](https://github.com/mornedhels/icarus-server/blob/main/LICENSE)
 
 
 Docker image for the game ICARUS.
