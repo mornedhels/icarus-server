@@ -5,7 +5,6 @@
 [![Docker Image Size (tag)](https://img.shields.io/docker/image-size/mornedhels/icarus-server/latest)](https://hub.docker.com/r/mornedhels/icarus-server)
 [![GitHub](https://img.shields.io/github/license/mornedhels/icarus-server)](https://github.com/mornedhels/icarus-server/blob/main/LICENSE)
 
-
 Docker image for the game ICARUS.
 The image is based on the [steamcmd](https://hub.docker.com/r/cm2network/steamcmd/) image and uses supervisor to handle
 startup, automatic updates and cleanup.
@@ -30,7 +29,7 @@ startup, automatic updates and cleanup.
 |    | `PUID`                           | `4711`                           | The UID to run server as                                                        |
 |    | `PGID`                           | `4711`                           | The GID to run server as                                                        |
 |    | `UPDATE_CRON`                    | `*/30 * * * *`                   | Update check cron interval (defaults to every 30 minutes)                       |
-| ⚠️ | `CLEANUP_CRON`                   | `-`                              | Cleanup old prospects cron (checks if all players left the prospect)            |
+| ⚠️ | `CLEANUP_CRON`                   |                                  | Cleanup old prospects cron (checks if all players left the prospect)            |
 | ⚠️ | `CLEANUP_DAYS`                   | `1`                              | Cleanup older prospects than x days (checks if all players left the prospect)   |
 |    | `STEAMCMD_ARGS`                  | `--beta "$GAME_BRANCH" validate` | Additional steamcmd args for the updater                                        |
 

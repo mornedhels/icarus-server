@@ -1,6 +1,6 @@
 #!/bin/bash
-download_path=/opt/icarus/download/server
 install_path=/opt/icarus/server
+version_file_path=/opt/icarus/current_version
 steamcmd_path=/usr/bin/steamcmd
 data_path=/home/icarus/.wine/drive_c/icarus
 config_path=$data_path/Saved/Config/WindowsServer

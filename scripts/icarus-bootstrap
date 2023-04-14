@@ -13,7 +13,6 @@ main() {
 }
 
 prepareIcarusAppFolders() {
-  mkdir -p "$download_path"
   mkdir -p "$install_path"
 }
 

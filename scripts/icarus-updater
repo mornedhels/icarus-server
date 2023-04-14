@@ -3,55 +3,48 @@
 . "$(dirname "$0")/defaults"
 
 pidfile=$icarus_updater_pidfile
+latest_version=-1
 
 main() {
   info "Running icarus-updater"
-
-  if [ -f "$pidfile" ]; then
-    info "Found existing PID file - checking process"
-    check_lock $pidfile
-  fi
-
-  trap shutdown SIGINT SIGTERM
-  verify_cpu_mhz
-  update &
-  icarus_updater_pid=$!
-  echo $icarus_updater_pid >"$pidfile"
-  wait $icarus_updater_pid
-
+  update
   info "icarus-updater complete"
 }
 
 update() {
-  local logfile
-
-  logfile="$(mktemp)"
-  info "downloading/updating/validating icarus server from Steam"
-  if ! download_icarus; then
-    if [ -f "$download_path/$icarus_binary_path" ]; then
-      error "Failed to update icarus server from Steam - however an existing version was found locally - using it"
-    else
-      error "Failed to download icarus server from Steam - retrying later - check your networking and volume access permissions"
-      return
-    fi
+  if [ -f "$pidfile" ]; then
+    info "Found existing PID file - checking process"
+    check_lock $pidfile
   fi
-  rsync -a --itemize-changes --delete --exclude steamapps --exclude Icarus/Binaries/Win64/appcache --exclude Icarus/Binaries/Win64/.sentry-native --exclude Icarus/Binaries/Win64/logs --exclude Icarus/Binaries/Win64/config "$download_path/" "$install_path" | tee "$logfile"
-  if grep '^[*>]' "$logfile" >/dev/null 2>&1; then
-    info "icarus server was updated - restarting"
-    supervisorctl restart icarus-server
-  else
-    info "icarus server is already the latest version"
+  trap shutdown SIGINT SIGTERM
+  if ! check_for_updates; then
     if ! check_running "icarus-server"; then
-      info "icarus server is not running - starting it"
+      info "ICARUS server is not running - starting"
       supervisorctl start icarus-server
     fi
+    return
   fi
-  rm -f "$logfile"
+
+  verify_cpu_mhz
+  do_update &
+  icarus_updater_pid=$!
+  echo $icarus_updater_pid >"$pidfile"
+  wait $icarus_updater_pid
+}
+
+do_update() {
+  if check_running "icarus-server"; then
+    supervisorctl stop icarus-server
+  fi
+  download_icarus
+  set_current_version
+  supervisorctl start icarus-server
+
   clear_lock "$pidfile"
 }
 
 download_icarus() {
-  $steamcmd_path +@sSteamCmdForcePlatformType windows +force_install_dir "$download_path" +login anonymous +app_update $steam_app_id $STEAMCMD_ARGS +quit
+  $steamcmd_path +@sSteamCmdForcePlatformType windows +force_install_dir "$install_path" +login anonymous +app_update $steam_app_id $STEAMCMD_ARGS +quit
 }
 
 # This works around the `Unable to determine CPU Frequency. Try defining CPU_MHZ.` steamcmd issue (#184).
@@ -67,6 +60,43 @@ verify_cpu_mhz() {
     debug "Unable to determine CPU Frequency - setting a default of 1.5 GHz so steamcmd won't complain"
     export CPU_MHZ="1500.000"
   fi
+}
+
+check_for_updates() {
+  local current_version
+  if [ -f "$version_file_path" ]; then
+    current_version=$(cat "$version_file_path")
+  else
+    current_version="0"
+  fi
+
+  latest_version=$(curl -sX GET "https://api.steamcmd.net/v1/info/$steam_app_id" | jq -r ".data.\"$steam_app_id\".depots.branches.$GAME_BRANCH.buildid")
+
+  if [ "$latest_version" == "null" ] || [ "$latest_version" == "-1" ]; then
+    if [ "$current_version" == "0" ]; then
+      warn "Unable to determine latest version of icarus server! No version currently installed, update server anyways"
+      return 0
+    fi
+    warn "Unable to determine latest version of icarus server! No update will be performed"
+    return 1
+  fi
+
+  if [ "$current_version" != "$latest_version" ]; then
+    info "ICARUS server needs to be updated"
+    return 0
+  else
+    info "ICARUS server is already the latest version"
+    return 1
+  fi
+}
+
+set_current_version() {
+  if [ "$latest_version" == "null" ] || [ "$latest_version" == "-1" ]; then
+    warn "Unable to set current version - latest version is unknown"
+    warn "Next update check will restart the server until version can be determined"
+    return 1
+  fi
+  echo "$latest_version" >"$version_file_path"
 }
 
 shutdown() {
