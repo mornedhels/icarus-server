@@ -1,4 +1,4 @@
-FROM steamcmd/steamcmd:ubuntu@sha256:959ecc82b4752f41d41fccf7b806fee033cf21cb94c8d0b68ec3b69cbc0a24f6
+FROM steamcmd/steamcmd:ubuntu@sha256:7d818479ca3e499edb92961b6edcfa805f90ed5a12c230f08af8befcf2367756
 RUN apt update && apt -y --no-install-recommends install supervisor cron curl rsyslog jq wine wine64 && apt clean \
     && mkdir -p /usr/local/etc /var/log/supervisor /var/run/icarus /usr/local/etc/supervisor/conf.d/ /opt/icarus /home/icarus/.steam \
     && groupadd -g "${PGID:-4711}" -o icarus \
