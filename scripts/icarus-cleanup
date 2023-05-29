@@ -11,15 +11,20 @@ main() {
 
 function cleanupProspects {
   local prospectFiles
+  local OIFS
+  local IFS
+  OIFS="$IFS"
+  IFS=$'\n'
   prospectFiles=$(find $data_path/Saved/PlayerData/DedicatedServer/Prospects -name '*.json')
   for prospect in $prospectFiles; do
     if [[ $(cat "$prospect" | jq '.ProspectInfo.AssociatedMembers | length') -eq 0 && $(find "$prospect" -type f -mmin +$CLEANUP_DAYS) ]]; then
       local filename
       filename=$(basename -- "$prospect")
       info "Removing prospect $filename"
-      #rm -f ../data/Saved/PlayerData/DedicatedServer/Prospects/"${filename%.*}*"
+      #rm -f "../data/Saved/PlayerData/DedicatedServer/Prospects/${filename%.*}*"
     fi
   done
+  IFS="$OIFS"
 }
 
 main
