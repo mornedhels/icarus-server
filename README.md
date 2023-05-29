@@ -17,8 +17,8 @@ startup, automatic updates and cleanup.
 |    | `SERVER_PASSWORD`                |                                  | The password for the server                                                     |
 |    | `SERVER_ADMIN_PASSWORD`          |                                  | The password for the admin login                                                |
 |    | `SERVER_MAX_PLAYERS`             | `8`                              | Max allowed players                                                             |
-|    | `PORT`                           | `17777`                          | The game port for the server                                                    |
-|    | `QUERYPORT`                      | `27015`                          | The steam query port for the server                                             |
+|    | `SERVER_PORT`                    | `17777`                          | The game port for the server                                                    |
+|    | `SERVER_QUERYPORT`               | `27015`                          | The steam query port for the server                                             |
 |    | `SERVER_SHUTDOWN_IF_NOT_JOINED`  | `300.000000`                     | Number of seconds until started prospect returns to lobby mode                  |
 |    | `SERVER_SHUTDOWN_IF_EMPTY`       | `60.000000`                      | Number of seconds until server returns to lobby mode after last prospector left |
 |    | `SERVER_ALLOW_NON_ADMINS_LAUNCH` | `True`                           | Allows all prospectors to select prospect in lobby mode                         |
@@ -61,7 +61,7 @@ services:
     container_name: icarus
     hostname: icarus
     restart: unless-stopped
-    stop_grace_period: 30s
+    stop_grace_period: 90s
     ports:
       - "17777:17777/udp"
       - "27015:27015/udp"
@@ -72,8 +72,39 @@ services:
       - SERVER_NAME=ICARUS Server
       - SERVER_PASSWORD=secret
       - SERVER_ADMIN_PASSWORD=evenmoresecret
-      - PORT=17777
-      - QUERYPORT=27015
+      - SERVER_PORT=17777
+      - SERVER_QUERYPORT=27015
       - PUID=4711
       - PGID=4711
+```
+
+The volumes are created next to the docker-compose.yml file. If you want to create the volumes, in the default location (eg. /var/lib/docker) you can use the following compose file:
+
+```yaml
+version: "3"
+services:
+  icarus:
+    image: mornedhels/icarus-server:latest
+    container_name: icarus
+    hostname: icarus
+    restart: unless-stopped
+    stop_grace_period: 90s
+    ports:
+      - "17777:17777/udp"
+      - "27015:27015/udp"
+    volumes:
+      - data:/home/icarus/.wine/drive_c/icarus
+      - game:/opt/icarus
+    environment:
+      - SERVER_NAME=ICARUS Server
+      - SERVER_PASSWORD=secret
+      - SERVER_ADMIN_PASSWORD=evenmoresecret
+      - SERVER_PORT=17777
+      - SERVER_QUERYPORT=27015
+      - PUID=4711
+      - PGID=4711
+  
+volumes:
+  data:
+  game:
 ```

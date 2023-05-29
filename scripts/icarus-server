@@ -27,13 +27,13 @@ wait_for_server_download() {
 
 run_server() {
   info "Running icarus-server"
-  debug "Server config -SteamServerName=$SERVER_NAME -PORT=$PORT -QueryPort=$QUERYPORT"
+  debug "Server config -SteamServerName=$SERVER_NAME -PORT=$SERVER_PORT -QueryPort=$SERVER_QUERYPORT"
 
   info "bootstrap wine"
   WINEPREFIX=/home/icarus/ WINEARCH=win64 WINEPATH=$install_path wineboot --init >/dev/null 2>&1
 
   chmod +x "$icarus_server"
-  wine "$icarus_server" -Log -UserDir='C:\icarus' -SteamServerName="$SERVER_NAME" -PORT="$PORT" -QueryPort="$QUERYPORT" &
+  wine "$icarus_server" -Log -UserDir='C:\icarus' -SteamServerName="$SERVER_NAME" -PORT="$SERVER_PORT" -QueryPort="$SERVER_QUERYPORT" &
   icarus_server_pid=$!
   echo $icarus_server_pid >"$icarus_server_pidfile"
 
