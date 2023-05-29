@@ -79,4 +79,3 @@ shutdown() {
 
 trap shutdown SIGINT SIGTERM
 main
-pidfile

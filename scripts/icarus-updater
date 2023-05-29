@@ -25,7 +25,6 @@ update() {
     return
   fi
 
-  verify_cpu_mhz
   do_update &
   icarus_updater_pid=$!
   echo $icarus_updater_pid >"$pidfile"
@@ -36,6 +35,7 @@ do_update() {
   if check_running "icarus-server"; then
     supervisorctl stop icarus-server
   fi
+  verify_cpu_mhz
   download_icarus
   set_current_version
   supervisorctl start icarus-server
