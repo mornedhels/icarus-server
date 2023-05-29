@@ -44,10 +44,13 @@ startup, automatic updates and cleanup.
 
 ## Volumes
 
-| Volume                            | Description                      |
-|-----------------------------------|----------------------------------|
-| /home/icarus/.wine/drive_c/icarus | Server config files and saves    |
-| /opt/icarus                       | Game files (steam download path) |
+| Volume                      | Description                      |
+|-----------------------------|----------------------------------|
+| /home/icarus/drive_c/icarus | Server config files and saves    |
+| /opt/icarus                 | Game files (steam download path) |
+
+**Note:** By default the volumes are created with the UID and GID 4711 (that user should not exist). To change this, set
+the environment variables `PUID` and `PGID`.
 
 ## Usage
 
@@ -66,7 +69,7 @@ services:
       - "17777:17777/udp"
       - "27015:27015/udp"
     volumes:
-      - ./data:/home/icarus/.wine/drive_c/icarus
+      - ./data:/home/icarus/drive_c/icarus
       - ./game:/opt/icarus
     environment:
       - SERVER_NAME=ICARUS Server
@@ -78,7 +81,8 @@ services:
       - PGID=4711
 ```
 
-The volumes are created next to the docker-compose.yml file. If you want to create the volumes, in the default location (eg. /var/lib/docker) you can use the following compose file:
+**Note:** The volumes are created next to the docker-compose.yml file. If you want to create the volumes, in the default
+location (eg. /var/lib/docker) you can use the following compose file:
 
 ```yaml
 version: "3"
@@ -93,7 +97,7 @@ services:
       - "17777:17777/udp"
       - "27015:27015/udp"
     volumes:
-      - data:/home/icarus/.wine/drive_c/icarus
+      - data:/home/icarus/drive_c/icarus
       - game:/opt/icarus
     environment:
       - SERVER_NAME=ICARUS Server
@@ -103,7 +107,7 @@ services:
       - SERVER_QUERYPORT=27015
       - PUID=4711
       - PGID=4711
-  
+
 volumes:
   data:
   game:

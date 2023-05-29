@@ -3,7 +3,7 @@
 . "$(dirname "$0")/defaults"
 
 icarus_server_pid=-1
-timeout=29
+timeout=60
 kill_signal=TERM
 
 cd "$install_path" || fatal "Could not cd $install_path"
@@ -30,7 +30,16 @@ run_server() {
   debug "Server config -SteamServerName=$SERVER_NAME -PORT=$SERVER_PORT -QueryPort=$SERVER_QUERYPORT"
 
   info "bootstrap wine"
-  WINEPREFIX=/home/icarus/ WINEARCH=win64 WINEPATH=$install_path wineboot --init >/dev/null 2>&1
+  export WINEPREFIX=/home/icarus/
+  export WINEARCH=win64
+  export WINEPATH=$install_path
+  export WINEDEBUG=fixme-all
+
+  debug "winecfg"
+  winecfg >/dev/null 2>&1
+  debug "wineboot"
+  wineboot --init >/dev/null 2>&1
+  info "wine bootstrap finished"
 
   chmod +x "$icarus_server"
   wine "$icarus_server" -Log -UserDir='C:\icarus' -SteamServerName="$SERVER_NAME" -PORT="$SERVER_PORT" -QueryPort="$SERVER_QUERYPORT" &
@@ -56,7 +65,7 @@ shutdown() {
     exit
   fi
   info "Shutting down icarus server with PID $icarus_server_pid"
-  kill -INT $icarus_server_pid
+  kill -TERM $icarus_server_pid
   shutdown_timeout=$(($(date +%s) + timeout))
   while [ -d "/proc/$icarus_server_pid" ]; do
     if [ "$(date +%s)" -gt $shutdown_timeout ]; then

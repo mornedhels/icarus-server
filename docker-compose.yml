@@ -10,13 +10,13 @@ services:
       - "17777:17777/udp"
       - "27015:27015/udp"
     volumes:
-      - ./data:/home/icarus/.wine/drive_c/icarus
+      - ./data:/home/icarus/drive_c/icarus
       - ./game:/opt/icarus
     environment:
       - SERVER_NAME=MornedhelsTest
       - SERVER_PORT=17777
       - SERVER_QUERYPORT=27015
-      - PUID=501
-      - PGID=501
+      - PUID=4711
+      - PGID=4711
       - UPDATE_CRON=*/30 * * * *
       - CLEANUP_CRON=*/10 * * * *

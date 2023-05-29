@@ -2,7 +2,7 @@
 install_path=/opt/icarus/server
 version_file_path=/opt/icarus/current_version
 steamcmd_path=/usr/bin/steamcmd
-data_path=/home/icarus/.wine/drive_c/icarus
+data_path=/home/icarus/drive_c/icarus
 config_path=$data_path/Saved/Config/WindowsServer
 steam_app_id=2089300
 icarus_binary_path=Icarus/Binaries/Win64/IcarusServer-Win64-Shipping.exe
