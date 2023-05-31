@@ -9,6 +9,8 @@ Docker image for the game ICARUS.
 The image is based on the [steamcmd](https://hub.docker.com/r/cm2network/steamcmd/) image and uses supervisor to handle
 startup, automatic updates and cleanup.
 
+Repository: **[mornedhels/icarus-server](https://github.com/mornedhels/icarus-server)**
+
 ## Environment Variables
 
 |    | Variable                         | Default                          | Description                                                                     |
@@ -31,6 +33,9 @@ startup, automatic updates and cleanup.
 |    | `UPDATE_CRON`                    | `*/30 * * * *`                   | Update check cron interval (defaults to every 30 minutes)                       |
 | ⚠️ | `CLEANUP_CRON`                   |                                  | Cleanup old prospects cron (checks if all players left the prospect)            |
 | ⚠️ | `CLEANUP_DAYS`                   | `1`                              | Cleanup older prospects than x days (checks if all players left the prospect)   |
+| ⚠️ | `CLEANUP_DELETE_BACKUPS`         | `false`                          | Remove backup files from pruned prospects                                       |
+| ⚠️ | `CLEANUP_PRUNE_FOLDER`           | `pruned`                         | Folder for cleaned prospects (relative to Prospects folder)                     |
+| ⚠️ | `CLEANUP_EXCLUDES`               |                                  | Exclude pattern (regex) for cleanup cron eg. world1\|world2                     |
 |    | `STEAMCMD_ARGS`                  | `--beta "$GAME_BRANCH" validate` | Additional steamcmd args for the updater                                        |
 
 ⚠️: Work in Progress

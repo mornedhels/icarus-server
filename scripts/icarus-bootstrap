@@ -5,6 +5,7 @@
 main() {
   info "Running icarus-bootstrap"
   prepareIcarusAppFolders
+  prepareIcarusDataFolders
   updateOrCreateIcarusEngineConfig
   updateOrCreateIcarusServerSettings
   initCrontab
@@ -14,6 +15,13 @@ main() {
 
 prepareIcarusAppFolders() {
   mkdir -p "$install_path"
+}
+
+prepareIcarusDataFolders() {
+  if [ -n "$CLEANUP_CRON" ]; then
+    debug "creating prune folder $data_path/Saved/PlayerData/DedicatedServer/$CLEANUP_PRUNE_FOLDER"
+    mkdir -p "$data_path/Saved/PlayerData/DedicatedServer/$CLEANUP_PRUNE_FOLDER"
+  fi
 }
 
 initCrontab() {

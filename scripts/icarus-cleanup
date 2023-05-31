@@ -17,11 +17,23 @@ function cleanupProspects {
   IFS=$'\n'
   prospectFiles=$(find $data_path/Saved/PlayerData/DedicatedServer/Prospects -name '*.json')
   for prospect in $prospectFiles; do
+    # skips prospect if it is included in the regex CLEANUP_EXCLUDES
+    if [[ $prospect =~ $CLEANUP_EXCLUDES ]]; then
+      debug "Skipping prospect $prospect"
+      continue
+    fi
+
     if [[ $(cat "$prospect" | jq '.ProspectInfo.AssociatedMembers | length') -eq 0 && $(find "$prospect" -type f -mmin +$CLEANUP_DAYS) ]]; then
       local filename
       filename=$(basename -- "$prospect")
-      info "Removing prospect $filename"
-      #rm -f "../data/Saved/PlayerData/DedicatedServer/Prospects/${filename%.*}*"
+
+      if [[ $CLEANUP_DELETE_BACKUPS == true ]]; then
+        debug "remove backups from $filename"
+        #rm -f "$data_path/Saved/PlayerData/DedicatedServer/Prospects/${filename%.*}"*.backup
+      fi
+
+      info "moving prospect $filename to prune folder $CLEANUP_PRUNE_FOLDER"
+      mv -f "$data_path/Saved/PlayerData/DedicatedServer/Prospects/${filename%.*}"* "$data_path/Saved/PlayerData/DedicatedServer/$CLEANUP_PRUNE_FOLDER/"
     fi
   done
   IFS="$OIFS"
