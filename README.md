@@ -30,7 +30,7 @@ Repository: **[mornedhels/icarus-server](https://github.com/mornedhels/icarus-se
 |    | `ASYNC_TASK_TIMEOUT`             | `60`                             | Sets AsyncTaskTimeout in Engine.ini                                             |
 |    | `PUID`                           | `4711`                           | The UID to run server as                                                        |
 |    | `PGID`                           | `4711`                           | The GID to run server as                                                        |
-|    | `UPDATE_CRON`                    | `*/30 * * * *`                   | Update check cron interval (defaults to every 30 minutes)                       |
+|    | `UPDATE_CRON`                    |                                  | Update check cron interval (eg. */30 * * * *)                                   |
 | ⚠️ | `CLEANUP_CRON`                   |                                  | Cleanup old prospects cron (checks if all players left the prospect)            |
 | ⚠️ | `CLEANUP_DAYS`                   | `1`                              | Cleanup older prospects than x days (checks if all players left the prospect)   |
 | ⚠️ | `CLEANUP_DELETE_BACKUPS`         | `false`                          | Remove backup files from pruned prospects                                       |
