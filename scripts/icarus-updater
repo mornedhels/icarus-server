@@ -24,6 +24,10 @@ update() {
     fi
     return
   fi
+  if ! check_server_empty; then
+    warn "ICARUS server is not empty - update will not be performed"
+    return
+  fi
 
   do_update &
   icarus_updater_pid=$!
@@ -88,6 +92,22 @@ check_for_updates() {
     info "ICARUS server is already the latest version"
     return 1
   fi
+}
+
+check_server_empty() {
+  local connected_players
+
+  if [ -z "$STEAM_API_KEY" ] || [ -z "$SERVER_IP" ]; then
+    warn "STEAM_API_KEY and SERVER_IP must be set to check if server is empty"
+    return 0
+  fi
+
+  connected_players=$(curl -sX GET "https://api.steampowered.com/IGameServersService/GetServerList/v1/?key=$STEAM_API_KEY&filter=addr\\$SERVER_IP:$SERVER_QUERYPORT" | jq -r ".response.servers[0].players")
+  if [ "$connected_players" != "null" ] && [ "$connected_players" -gt 0 ]; then
+    return 1
+  fi
+
+  return 0
 }
 
 set_current_version() {

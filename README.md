@@ -21,6 +21,7 @@ Repository: **[mornedhels/icarus-server](https://github.com/mornedhels/icarus-se
 |    | `SERVER_MAX_PLAYERS`             | `8`                              | Max allowed players                                                             |
 |    | `SERVER_PORT`                    | `17777`                          | The game port for the server                                                    |
 |    | `SERVER_QUERYPORT`               | `27015`                          | The steam query port for the server                                             |
+| ⚠️ | `SERVER_IP`                      |                                  | Server IP for the server empty check (update cron)                              |
 |    | `SERVER_SHUTDOWN_IF_NOT_JOINED`  | `300.000000`                     | Number of seconds until started prospect returns to lobby mode                  |
 |    | `SERVER_SHUTDOWN_IF_EMPTY`       | `60.000000`                      | Number of seconds until server returns to lobby mode after last prospector left |
 |    | `SERVER_ALLOW_NON_ADMINS_LAUNCH` | `True`                           | Allows all prospectors to select prospect in lobby mode                         |
@@ -36,9 +37,15 @@ Repository: **[mornedhels/icarus-server](https://github.com/mornedhels/icarus-se
 | ⚠️ | `CLEANUP_DELETE_BACKUPS`         | `false`                          | Remove backup files from pruned prospects                                       |
 | ⚠️ | `CLEANUP_PRUNE_FOLDER`           | `pruned`                         | Folder for cleaned prospects (relative to Prospects folder)                     |
 | ⚠️ | `CLEANUP_EXCLUDES`               |                                  | Exclude pattern (regex) for cleanup cron eg. world1\|world2                     |
+| ⚠️ | `STEAM_API_KEY`                  |                                  | SteamApi key to authorize requests (needed for empty server check)              |
 |    | `STEAMCMD_ARGS`                  | `--beta "$GAME_BRANCH" validate` | Additional steamcmd args for the updater                                        |
 
 ⚠️: Work in Progress
+
+### Additional Information
+
+* STEAM_API_KEY is only needed for the update cron, to check if the server is empty. You can get a key from
+  [Steam](https://steamcommunity.com/dev/apikey). If 
 
 ## Ports
 
