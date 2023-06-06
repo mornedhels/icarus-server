@@ -45,7 +45,7 @@ Repository: **[mornedhels/icarus-server](https://github.com/mornedhels/icarus-se
 ### Additional Information
 
 * STEAM_API_KEY is only needed for the update cron, to check if the server is empty. You can get a key from
-  [Steam](https://steamcommunity.com/dev/apikey). If 
+  [Steam](https://steamcommunity.com/dev/apikey). If not supplied, the check will be skipped. 
 
 ## Ports
 
