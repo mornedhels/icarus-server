@@ -1,6 +1,6 @@
 name: 🚀 Feature request
 description: Suggest an idea for icarus-server
-labels: "T: feature-request 🚀"
+labels: [ "feature-request 🚀" ]
 body:
   - type: checkboxes
     attributes:

@@ -1,6 +1,6 @@
 name: 🐛 Bug report
 description: Report a bug in icarus-server to help us fix it
-labels: [ "T: bug 🐞" ]
+labels: [ "bug 🐞" ]
 body:
   - type: checkboxes
     attributes:
