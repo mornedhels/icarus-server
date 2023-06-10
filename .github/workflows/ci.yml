@@ -13,7 +13,7 @@ concurrency: CI-${{ github.ref }}
 
 jobs:
   docker-build:
-    uses: mornedhels/workflow-center/.github/workflows/docker/docker-build.yml@main
+    uses: mornedhels/workflow-center/.github/workflows/docker-build.yml@main
     with:
       image-name: icarus-server
       image-tag: dev
