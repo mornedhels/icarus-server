@@ -4,29 +4,16 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
-    inputs:
-      reason:
-        description: optional reason for build
-        default: ""
-        required: false
+
+concurrency: CI-${{ github.ref }}
 
 jobs:
   docker-build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Docker Login
-        uses: docker/login-action@v2
-        with:
-          username: ${{ vars.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_TOKEN }}
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          platforms: linux/amd64
-          push: true
-          tags: |
-            ${{ vars.DOCKER_USER }}/icarus-server:dev
+    uses: mornedhels/workflow-center/.github/workflows/docker/docker-build.yml@main
+    with:
+      image-name: icarus-server
+      image-tag: dev
