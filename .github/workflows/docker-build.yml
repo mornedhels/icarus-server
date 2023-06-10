@@ -100,7 +100,7 @@ jobs:
         if: inputs.trivy-scan == true
         uses: aquasecurity/trivy-action@0.10.0
         with:
-          image-ref: ${{ fromJSON(steps.meta.outputs.tags)[0] }}
+          image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           format: 'sarif'
           output: 'trivy-results.sarif'
           exit-code: '1'
