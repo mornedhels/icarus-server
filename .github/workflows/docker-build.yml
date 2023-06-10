@@ -56,7 +56,7 @@ on:
         type: string
         required: false
     secrets:
-      CONTAINER-REGISTRY-PASSWORD:
+      CONTAINER_REGISTRY_PASSWORD:
         required: true
 
 jobs:
