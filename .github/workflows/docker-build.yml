@@ -100,7 +100,7 @@ jobs:
         if: inputs.trivy-scan == true
         uses: aquasecurity/trivy-action@0.10.0
         with:
-          image-ref: ${{ inputs.container-registry }}/${{ inputs.image-package }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
+          image-ref: ${{ inputs.container-registry }}/${{ inputs.container-registry-user }}/${{ inputs.image-name }}:${{ steps.meta.outputs.tags[0] }}
           format: 'sarif'
           output: 'trivy-results.sarif'
           exit-code: '1'
