@@ -17,3 +17,5 @@ jobs:
     with:
       image-name: icarus-server
       image-tag: dev
+    secrets:
+      CONTAINER-REGISTRY-PASSWORD: ${{ secrets.DOCKER_TOKEN }}
