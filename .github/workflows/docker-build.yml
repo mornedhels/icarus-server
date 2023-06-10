@@ -1,0 +1,126 @@
+name: docker build
+
+on:
+  workflow_call:
+    inputs:
+      image-name:
+        description: "the name of the image"
+        type: string
+        required: true
+      image-tag:
+        description: "the version of the image to deploy, list of tags e.g. `dev,1.0.0`"
+        required: true
+        type: string
+      dockerfile:
+        description: "the name of the dockerfile"
+        default: "Dockerfile"
+        type: string
+        required: false
+      platform:
+        description: "the platform to build for, default is `linux/amd64`"
+        default: "linux/amd64"
+        type: string
+        required: false
+      buildx-version:
+        description: "the version of buildx to use"
+        type: string
+        required: false
+      container-registry:
+        description: "the container registry to use"
+        default: "registry.hub.docker.com"
+        type: string
+        required: false
+      container-registry-user:
+        description: "the container registry user to use"
+        default: "mornedhels"
+        type: string
+        required: false
+      trivy-scan:
+        description: "indicates whether to perform the trivy scan, default is `true`"
+        default: true
+        type: boolean
+        required: false
+      trivy-ignore-unfixed:
+        description: "default is `true`, see [trivy-action](https://github.com/aquasecurity/trivy-action)"
+        default: true
+        type: boolean
+        required: false
+      project-root:
+        description: "the root of the project, default is '.'"
+        default: "."
+        type: string
+        required: false
+      runner:
+        description: "the runner to use"
+        default: "ubuntu-latest"
+        type: string
+        required: false
+    secrets:
+      CONTAINER-REGISTRY-PASSWORD:
+        required: true
+
+jobs:
+  docker:
+    name: Docker Build & Push
+    runs-on: ${{ inputs.runner }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up QEMU
+        if: ${{ inputs.platform != 'linux/amd64' }}
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          version: ${{ inputs.buildx-version }}
+      - name: Docker Login
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ inputs.container-registry }}
+          username: ${{ inputs.container-registry-user }}
+          password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ inputs.container-registry }}/${{ inputs.container-registry-user }}/${{ inputs.image-name }}
+          tags: ${{ inputs.image-tag }}
+          flavor: |
+            latest=false
+      - name: Docker build
+        uses: docker/build-push-action@v4
+        with:
+          context: ${{ inputs.project-root }}
+          file: ${{ inputs.dockerfile }}
+          load: true
+          provenance: false
+          platforms: ${{ inputs.platform }}
+          tags: ${{ steps.meta.outputs.tags }}
+      - name: Run Trivy vulnerability scanner
+        if: inputs.trivy-scan == true
+        uses: aquasecurity/trivy-action@0.10.0
+        with:
+          image-ref: ${{ inputs.container-registry }}/${{ inputs.image-package }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          exit-code: '1'
+          ignore-unfixed: ${{ inputs.trivy-ignore-unfixed }}
+          vuln-type: 'os,library'
+          security-checks: 'vuln'
+          severity: 'CRITICAL,HIGH'
+      - name: Upload Trivy scan results to GitHub Security tab
+        if: always() && inputs.trivy-scan == true && hashFiles('trivy-results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Docker push
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v4
+        with:
+          context: ${{ inputs.project-root }}
+          file: ${{ inputs.dockerfile }}
+          push: true
+          provenance: false
+          platforms: ${{ inputs.platform }}
+          tags: ${{ steps.meta.outputs.tags }}
