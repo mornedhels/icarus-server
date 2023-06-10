@@ -45,11 +45,6 @@ on:
         default: true
         type: boolean
         required: false
-      trivy-category:
-        description: "group vulnerabilities by category, default is `CI`"
-        default: "CI"
-        type: string
-        required: false
       project-root:
         description: "the root of the project, default is '.'"
         default: "."
@@ -118,7 +113,6 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: 'trivy-results.sarif'
-          category: ${{ inputs.trivy-category }}
       - name: Docker push
         if: github.event_name != 'pull_request'
         uses: docker/build-push-action@v4
