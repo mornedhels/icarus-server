@@ -7,51 +7,11 @@ on:
 
 jobs:
   trivy-scan-latest:
-    name: Trivy Scan Latest
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Get latest tag
-        id: vars
-        run: |
-          latest_tag=$(git describe --tags --abbrev=0)
-          latest_tag_sha=$(git rev-list -n 1 $latest_tag)
-          echo "GIT_TAG=$latest_tag" >> $GITHUB_OUTPUT
-          echo "GIT_TAG_SHA=$latest_tag_sha" >> $GITHUB_OUTPUT
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.10.0
-        with:
-          image-ref: ${{ vars.DOCKER_USER }}/icarus-server:${{ steps.vars.outputs.GIT_TAG }}
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          scanners: 'vuln'
-          severity: 'CRITICAL,HIGH'
-      - name: Upload Trivy results
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: trivy-results.sarif
-          ref: refs/tags/${{ steps.vars.outputs.GIT_TAG }}
-          sha: ${{ steps.vars.outputs.GIT_TAG_SHA }}
+    uses: mornedhels/workflow-center-public/.github/workflows/docker-trivy.yml@main
+    with:
+      image-name: icarus-server
   trivy-scan-dev:
-    name: Trivy Scan DEV
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.10.0
-        with:
-          image-ref: ${{ vars.DOCKER_USER }}/icarus-server:dev
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          scanners: 'vuln'
-          severity: 'CRITICAL,HIGH'
-      - name: Upload Trivy results
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: trivy-results.sarif
+    uses: mornedhels/workflow-center-public/.github/workflows/docker-trivy.yml@main
+    with:
+      image-name: icarus-server
+      image-tag: dev
