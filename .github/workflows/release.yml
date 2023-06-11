@@ -4,24 +4,16 @@ on:
   release:
     types: [released]
 
+concurrency: Release-${{ github.ref }}
+
 jobs:
   docker-build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Docker Login
-        uses: docker/login-action@v2
-        with:
-          username: ${{ vars.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_TOKEN }}
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          platforms: linux/amd64
-          push: true
-          tags: |
-            ${{ vars.DOCKER_USER }}/icarus-server:${{ github.event.release.tag_name }}
-            ${{ vars.DOCKER_USER }}/icarus-server:latest
+    uses: ./.github/workflows/docker-build.yml
+    with:
+      image-name: icarus-server
+      image-tag: |
+        ${{ github.event.release.tag_name }}
+        latest
+    secrets:
+      CONTAINER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
 
