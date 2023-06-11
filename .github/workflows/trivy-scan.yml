@@ -1,0 +1,36 @@
+name: Trivy Scan
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  trivy-scan:
+    name: Trivy Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get latest tag
+        id: vars
+        run: |
+          latest_tag=$(git describe --tags --abbrev=0)
+          latest_tag_sha=$(git rev-list $latest_tag)
+          echo "GIT_TAG=$latest_tag" >> $GITHUB_OUTPUT
+          echo "GIT_TAG_SHA=$latest_tag_sha" >> $GITHUB_OUTPUT
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.10.0
+        with:
+          image-ref: ${{ vars.DOCKER_USER }}/icarus-server:${{ steps.vars.outputs.GIT_TAG }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          security-checks: 'vuln'
+          severity: 'CRITICAL,HIGH'
+      - name: Upload Trivy results
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: trivy-results.sarif
+          ref: ${{ steps.vars.outputs.GIT_TAG }}
+          sha: ${{ steps.vars.outputs.GIT_TAG_SHA }}
