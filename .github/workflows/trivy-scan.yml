@@ -17,7 +17,7 @@ jobs:
         id: vars
         run: |
           latest_tag=$(git describe --tags --abbrev=0)
-          latest_tag_sha=$(git rev-list $latest_tag)
+          latest_tag_sha=$(git rev-list -n 1 $latest_tag)
           echo "GIT_TAG=$latest_tag" >> $GITHUB_OUTPUT
           echo "GIT_TAG_SHA=$latest_tag_sha" >> $GITHUB_OUTPUT
       - name: Run Trivy vulnerability scanner
