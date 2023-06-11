@@ -34,5 +34,5 @@ jobs:
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: trivy-results.sarif
-          ref: ${{ steps.vars.outputs.GIT_TAG }}
+          ref: refs/tags/${{ steps.vars.outputs.GIT_TAG }}
           sha: ${{ steps.vars.outputs.GIT_TAG_SHA }}
