@@ -106,7 +106,7 @@ jobs:
           exit-code: '1'
           ignore-unfixed: ${{ inputs.trivy-ignore-unfixed }}
           vuln-type: 'os,library'
-          security-checks: 'vuln'
+          scanners: 'vuln'
           severity: 'CRITICAL,HIGH'
       - name: Upload Trivy scan results to GitHub Security tab
         if: always() && inputs.trivy-scan == true && hashFiles('trivy-results.sarif') != ''
