@@ -1,4 +1,4 @@
-FROM steamcmd/steamcmd:ubuntu-22@sha256:3516a2bd4c64d662db239c392b76ef792d40f83a1e45536249c76e63b70fb951
+FROM steamcmd/steamcmd:ubuntu-22@sha256:b4ed466ef424a2261540d311a5fd36f99a611fe06e8b8091ac4bb2b1d39a624f
 RUN dpkg --add-architecture i386 \
     && apt update && apt -y --no-install-recommends install curl \
     && mkdir -pm755 /etc/apt/keyrings \
