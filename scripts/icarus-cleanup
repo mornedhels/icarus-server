@@ -28,8 +28,8 @@ function cleanupProspects {
       filename=$(basename -- "$prospect")
 
       if [[ $CLEANUP_DELETE_BACKUPS == true ]]; then
-        debug "remove backups from $filename"
-        #rm -f "$data_path/Saved/PlayerData/DedicatedServer/Prospects/${filename%.*}"*.backup
+        info "remove backups from $filename"
+        rm -f "$data_path/Saved/PlayerData/DedicatedServer/Prospects/${filename%.*}"*.backup
       fi
 
       info "moving prospect $filename to prune folder $CLEANUP_PRUNE_FOLDER"

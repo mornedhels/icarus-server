@@ -16,4 +16,13 @@ jobs:
         latest
     secrets:
       CONTAINER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
-
+  update-readme:
+    runs-on: ubuntu-latest
+    needs: [docker-build]
+    steps:
+      - name: Update Docker Hub Description
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ vars.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+          repository: ${{ vars.DOCKER_USER }}/icarus-server
