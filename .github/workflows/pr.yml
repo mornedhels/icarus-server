@@ -1,0 +1,16 @@
+name: PR-Automation
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+    steps:
+      - name: Enable auto-merge for Dependabot PRs
+        run: gh pr merge ${{ github.event.pull_request.number}} --auto --merge
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
