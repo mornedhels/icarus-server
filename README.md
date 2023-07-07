@@ -63,6 +63,13 @@ Repository: **[mornedhels/icarus-server](https://github.com/mornedhels/icarus-se
 **Note:** By default the volumes are created with the UID and GID 4711 (that user should not exist). To change this, set
 the environment variables `PUID` and `PGID`.
 
+## System Requirements
+
+* **RAM:** 32 GB
+* **Disk:** ~20 GB
+
+⚠️: With 16 GB RAM the server will crash after a while or with multiple players connected (OOM)
+
 ## Usage
 
 ### Docker Compose
