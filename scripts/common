@@ -19,6 +19,11 @@ icarus_updater_pidfile=/var/run/icarus/icarus-updater.pid
 # Syslog supervisor config file
 supervisor_syslog_conf=/usr/local/etc/supervisor/conf.d/syslog.conf
 
+# WINE
+WINEPREFIX=/home/icarus/
+WINEARCH=win64
+WINEPATH=$install_path
+
 # log levels
 debug=50
 info=40
@@ -26,7 +31,7 @@ warn=30
 error=20
 critical=10
 fatal=5
-log_level=${log_level:-$debug}
+log_level=${log_level:-$info}
 
 debug() { logstd $debug "DEBUG - [$$] - $*"; }
 info() { logstd $info "INFO - $*"; }

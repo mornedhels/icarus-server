@@ -9,6 +9,7 @@ main() {
   updateOrCreateIcarusEngineConfig
   updateOrCreateIcarusServerSettings
   initCrontab
+  bootstrapWine
   supervisorctl start icarus-updater
   info "Bootstrap complete"
 }
@@ -22,6 +23,19 @@ prepareIcarusDataFolders() {
     debug "creating prune folder $data_path/Saved/PlayerData/DedicatedServer/$CLEANUP_PRUNE_FOLDER"
     mkdir -p "$data_path/Saved/PlayerData/DedicatedServer/$CLEANUP_PRUNE_FOLDER"
   fi
+}
+
+bootstrapWine() {
+  info "bootstrap wine"
+
+  debug "winecfg"
+  winecfg -v win10 >/dev/null 2>&1
+  debug "wineboot"
+  wineboot --init >/dev/null 2>&1
+  debug "winetricks"
+  winetricks -q vcrun2019 corefonts
+
+  info "wine bootstrap finished"
 }
 
 initCrontab() {
