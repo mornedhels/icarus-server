@@ -27,13 +27,15 @@ prepareIcarusDataFolders() {
 
 bootstrapWine() {
   info "bootstrap wine"
+  export WINEPREFIX=$WINEPREFIX
+  export WINEARCH=$WINEARCH
+  export WINEPATH=$WINEPATH
+  export WINEDEBUG=$WINEDEBUG
 
   debug "winecfg"
   winecfg -v win10 >/dev/null 2>&1
   debug "wineboot"
   wineboot --init >/dev/null 2>&1
-  debug "winetricks"
-  winetricks -q vcrun2019 corefonts
 
   info "wine bootstrap finished"
 }
