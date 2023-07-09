@@ -14,10 +14,18 @@ on:
 concurrency: CI-${{ github.ref }}
 
 jobs:
-  docker-build:
+  build-wine-stable:
     uses: mornedhels/workflow-center-public/.github/workflows/docker-build.yml@main
     with:
       image-name: icarus-server
       image-tag: dev
+    secrets:
+      CONTAINER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
+  build-wine-staging:
+    uses: mornedhels/workflow-center-public/.github/workflows/docker-build.yml@main
+    with:
+      image-name: icarus-server
+      image-tag: dev-wine-staging
+      dockerfile: Dockerfile.wine-staging
     secrets:
       CONTAINER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
