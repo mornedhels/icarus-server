@@ -12,7 +12,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: generate token for workflow dispatch and checkout
+      - name: generate token for automerge
         id: automerge-app-token
         uses: getsentry/action-github-app-token@v2
         with:
