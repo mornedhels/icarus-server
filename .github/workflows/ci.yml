@@ -26,6 +26,8 @@ jobs:
     with:
       image-name: icarus-server
       image-tag: dev-wine-staging
-      dockerfile: Dockerfile.wine-staging
+      build-args: |
+        WINE_BRANCH=staging
+      trivy-scan: false
     secrets:
       CONTAINER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
