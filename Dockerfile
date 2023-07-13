@@ -1,4 +1,4 @@
-FROM steamcmd/steamcmd:ubuntu-22@sha256:37164f5471951a78d50e3cd44ad14ef9a8235b09cec9f600ed6c683cc46e38c7
+FROM steamcmd/steamcmd:ubuntu-22@sha256:b7da829f0cd7d661b5ce8ee55b4e782e1f8b17f5c766618497363cd6fecdb9e8
 
 # Install prerequisites
 RUN apt-get update \
