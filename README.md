@@ -135,12 +135,12 @@ volumes:
 * OOM: Server logs `Freeing x bytes from backup pool to handle out of memory`
   and `Fatal error: [File: Unknown] [Line: 197] \nRan out of memory allocating 0 bytes with alignment 0\n` but system
   has enough memory.
-  * Solution: Increase maximum number of memory map areas (vm.max_map_count) tested with `262144`<br/>
+  * **Solution:** Increase maximum number of memory map areas (vm.max_map_count) tested with `262144`<br/>
     **temporary:**
     ```bash
       sysctl -w vm.max_map_count=262144
     ```
     **permanent:**
     ```bash
-      echo "vm.max_map_count=262144" >> /etc/sysctl.conf && sysctl -p`
+      echo "vm.max_map_count=262144" >> /etc/sysctl.conf && sysctl -p
     ```
