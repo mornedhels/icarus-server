@@ -63,12 +63,11 @@ Repository: **[mornedhels/icarus-server](https://github.com/mornedhels/icarus-se
 **Note:** By default the volumes are created with the UID and GID 4711 (that user should not exist). To change this, set
 the environment variables `PUID` and `PGID`.
 
-## System Requirements
+## Recommended System Requirements
 
-* **RAM:** 32 GB
+* **CPU:** CPU (preferred high single core performance)
+* **RAM:** > 8 GB (16 GB recommended)
 * **Disk:** ~20 GB
-
-⚠️: With 16 GB RAM the server will crash after a while or with multiple players connected (OOM)
 
 ## Usage
 
@@ -130,3 +129,18 @@ volumes:
   data:
   game:
 ```
+
+## Known Issues
+
+* OOM: Server logs `Freeing x bytes from backup pool to handle out of memory`
+  and `Fatal error: [File: Unknown] [Line: 197] \nRan out of memory allocating 0 bytes with alignment 0\n` but system
+  has enough memory.
+  * Solution: Increase maximum number of memory map areas (vm.max_map_count) tested with `262144`<br/>
+    **temporary:**
+    ```bash
+      sysctl -w vm.max_map_count=262144
+    ```
+    **permanent:**
+    ```bash
+      echo "vm.max_map_count=262144" >> /etc/sysctl.conf && sysctl -p`
+    ```
