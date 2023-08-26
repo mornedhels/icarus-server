@@ -65,7 +65,7 @@ the environment variables `PUID` and `PGID`.
 
 ## Recommended System Requirements
 
-* **CPU:** CPU (preferred high single core performance)
+* **CPU:** min 2 CPU (preferred high single core performance)
 * **RAM:** > 8 GB (16 GB recommended)
 * **Disk:** ~20 GB
 
@@ -130,17 +130,29 @@ volumes:
   game:
 ```
 
+## Commands
+
+* **Force Update:**
+  ```bash
+  docker compose exec icarus supervisorctl start icarus-force-update
+  ```
+
 ## Known Issues
 
 * OOM: Server logs `Freeing x bytes from backup pool to handle out of memory`
   and `Fatal error: [File: Unknown] [Line: 197] \nRan out of memory allocating 0 bytes with alignment 0\n` but system
   has enough memory.
-  * **Solution:** Increase maximum number of memory map areas (vm.max_map_count) tested with `262144`<br/>
-    **temporary:**
-    ```bash
-      sysctl -w vm.max_map_count=262144
-    ```
-    **permanent:**
-    ```bash
-      echo "vm.max_map_count=262144" >> /etc/sysctl.conf && sysctl -p
-    ```
+    * **Solution:** Increase maximum number of memory map areas (vm.max_map_count) on **docker host**. Tested
+      with `262144`<br/>
+      **temporary:**
+      ```bash
+        sysctl -w vm.max_map_count=262144
+      ```
+      **permanent:**
+      ```bash
+        echo "vm.max_map_count=262144" >> /etc/sysctl.conf && sysctl -p
+      ```
+* Auto-Updater not working: Server logs: `Info - ICARUS server is already the latest version`
+    * **Solution:** Update Image to latest version<br/>
+      **Quickfix (no update required):** Delete current_version file inside the game folder. After that, the next update
+      check will force the server to update.
