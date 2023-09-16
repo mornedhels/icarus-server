@@ -6,7 +6,6 @@ RUN apt-get update \
         cabextract \
         curl \
         winbind \
-        xvfb \
         supervisor \
         cron \
         rsyslog \

@@ -35,8 +35,7 @@ run_server() {
   export WINEDEBUG=$WINEDEBUG
 
   chmod +x "$icarus_server"
-  Xvfb :1 -screen 0 1024x768x16 &
-  DISPLAY=:1 wine64 "$icarus_server" -Log -UserDir='C:\icarus' -SteamServerName="$SERVER_NAME" -PORT="$SERVER_PORT" -QueryPort="$SERVER_QUERYPORT" &
+  wine64 "$icarus_server" -Log -UserDir='C:\icarus' -SteamServerName="$SERVER_NAME" -PORT="$SERVER_PORT" -QueryPort="$SERVER_QUERYPORT" &
   icarus_server_pid=$!
   echo $icarus_server_pid >"$icarus_server_pidfile"
 
