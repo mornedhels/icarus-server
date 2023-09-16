@@ -152,7 +152,3 @@ volumes:
       ```bash
         echo "vm.max_map_count=262144" >> /etc/sysctl.conf && sysctl -p
       ```
-* Auto-Updater not working: Server logs: `Info - ICARUS server is already the latest version`
-    * **Solution:** Update Image to latest version<br/>
-      **Quickfix (no update required):** Delete current_version file inside the game folder. After that, the next update
-      check will force the server to update.
