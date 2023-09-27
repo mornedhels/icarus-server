@@ -80,7 +80,7 @@ check_for_updates() {
     current_version="0"
   fi
 
-  latest_version=$(curl -sX GET "https://steamcmd-api.mornedhels.de/v1/info/$steam_app_id" | jq -r ".data.\"$steam_app_id\".depots.branches.$GAME_BRANCH.buildid")
+  latest_version=$(curl -sX GET "https://api.steamcmd.net/v1/info/$steam_app_id" | jq -r ".data.\"$steam_app_id\".depots.branches.$GAME_BRANCH.buildid")
 
   if [ "$latest_version" == "null" ] || [ "$latest_version" == "-1" ]; then
     if [ "$current_version" == "0" ]; then
