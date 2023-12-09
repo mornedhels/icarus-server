@@ -68,6 +68,9 @@ the environment variables `PUID` and `PGID`.
 * **CPU:** min 2 CPU (preferred high single core performance)
 * **RAM:** > 8 GB (16 GB recommended)
 * **Disk:** ~20 GB
+* **Docker Host\*:** Linux, macOS
+
+*Windows is not supported (see #46)
 
 ## Usage
 
