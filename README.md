@@ -5,11 +5,11 @@
 [![Docker Image Size (tag)](https://img.shields.io/docker/image-size/mornedhels/icarus-server/latest)](https://hub.docker.com/r/mornedhels/icarus-server)
 [![GitHub](https://img.shields.io/github/license/mornedhels/icarus-server)](https://github.com/mornedhels/icarus-server/blob/main/LICENSE)
 
+[![GitHub](https://img.shields.io/badge/Repository-mornedhels/icarus--server-blue?logo=github)](https://github.com/mornedhels/icarus-server)
+
 Docker image for the game ICARUS.
 The image is based on the [steamcmd](https://hub.docker.com/r/cm2network/steamcmd/) image and uses supervisor to handle
 startup, automatic updates and cleanup.
-
-Repository: **[mornedhels/icarus-server](https://github.com/mornedhels/icarus-server)**
 
 ## Environment Variables
 
@@ -70,7 +70,7 @@ the environment variables `PUID` and `PGID`.
 * **Disk:** ~20 GB
 * **Docker Host\*:** Linux, macOS
 
-*Windows is not supported (see #46)
+*Windows is not supported (see [#46](https://github.com/mornedhels/icarus-server/issues/46))
 
 ## Usage
 
