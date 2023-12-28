@@ -1,4 +1,5 @@
 FROM steamcmd/steamcmd:ubuntu-22@sha256:b9b251fa8b05ef195a205d2e811fb655fa5bd61e40ab7bb3f88aca3b223c851b
+LABEL maintainer="docker@mornedhels.de"
 
 # Install prerequisites
 RUN apt-get update \
