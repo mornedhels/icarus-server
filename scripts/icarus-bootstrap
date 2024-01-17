@@ -37,6 +37,8 @@ bootstrapWine() {
   debug "wineboot"
   wineboot --init >/dev/null 2>&1
 
+  info "wine version: $(wine64 --version)"
+
   info "wine bootstrap finished"
 }
 
@@ -128,6 +130,8 @@ EOF
   if [[ -n "$SERVER_RESUME_PROSPECT" ]]; then
     sed -i "/ResumeProspect=/c\ResumeProspect=${SERVER_RESUME_PROSPECT}" ${config_path}/ServerSettings.ini
   fi
+
+  sed -i "/LoadProspect=/c\LoadProspect=" ${config_path}/ServerSettings.ini
 }
 
 main

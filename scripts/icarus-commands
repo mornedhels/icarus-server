@@ -1,0 +1,38 @@
+#!/bin/bash
+. "$(dirname "$0")/common"
+. "$(dirname "$0")/defaults"
+
+loadProspect() {
+  local prospectName=${@:2}
+
+  if [[ -z "$prospectName" ]]; then
+    warn "No prospect name provided. Skip server restart."
+    return
+  fi
+
+  if [[ ! -f "${data_path}/Saved/PlayerData/DedicatedServer/Prospects/${prospectName}.json" ]]; then
+    warn "Prospect ${prospectName} does not exist. Skip server restart."
+    return
+  fi
+
+  info "Loading prospect $prospectName"
+  supervisorctl stop icarus-server
+  echo sed -i "/LoadProspect=/c\LoadProspect=${prospectName}" ${config_path}/ServerSettings.ini
+  sed -i "/LoadProspect=/c\LoadProspect=${prospectName}" ${config_path}/ServerSettings.ini
+  supervisorctl start icarus-server
+}
+
+main() {
+  local command=$1
+
+  case $command in
+    loadProspect)
+      loadProspect $@
+      ;;
+    *)
+      info "Usage: $0 loadProspect <prospectName>"
+      exit 1
+  esac
+}
+
+main $@

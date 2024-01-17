@@ -1,7 +1,12 @@
 version: "3"
 services:
   icarus:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        WINE_BRANCH: staging
+    image: mornedhels/icarus-server:dev
     container_name: icarus
     hostname: icarus
     restart: unless-stopped
