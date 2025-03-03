@@ -1,0 +1,50 @@
+#!/bin/bash
+. "$(dirname "$0")/common"
+. "$(dirname "$0")/defaults"
+. "$(dirname "$0")/icarus-updater-shared"
+
+main() {
+  info "Running icarus-updater"
+  update
+  info "icarus-updater complete"
+}
+
+download_icarus() {
+  mkdir -p "$install_path/steamapps/compatdata/$steam_app_id"
+  export WINETRICKS="/usr/local/bin/winetricks"
+  export STEAM_COMPAT_CLIENT_INSTALL_PATH="/home/icarus/.steam/steam"
+  export STEAM_COMPAT_DATA_PATH="$install_path/steamapps/compatdata/$steam_app_id"
+  export STEAM_DIR="/home/icarus/.steam/steam/"
+
+  $steamcmd_path +@sSteamCmdForcePlatformType windows +force_install_dir "$install_path" +login anonymous +app_update $steam_app_id $STEAMCMD_ARGS +quit
+}
+
+check_for_updates() {
+  local current_version
+  if [ -f "$version_file_path" ]; then
+    current_version=$(cat "$version_file_path")
+  else
+    current_version="0"
+  fi
+
+  latest_version=$(curl -sX GET "https://api.steamcmd.net/v1/info/$steam_app_id" | jq -r ".data.\"$steam_app_id\".depots.branches.$GAME_BRANCH.buildid")
+
+  if [ "$latest_version" == "null" ] || [ "$latest_version" == "-1" ]; then
+    if [ "$current_version" == "0" ]; then
+      warn "Unable to determine latest version of icarus server! No version currently installed, update server anyways"
+      return 0
+    fi
+    warn "Unable to determine latest version of icarus server! No update will be performed"
+    return 1
+  fi
+
+  if [ "$current_version" != "$latest_version" ]; then
+    info "ICARUS server needs to be updated"
+    return 0
+  else
+    info "ICARUS server is already the latest version"
+    return 1
+  fi
+}
+
+main

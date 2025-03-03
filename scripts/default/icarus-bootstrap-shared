@@ -1,0 +1,124 @@
+#!/bin/bash
+. "$(dirname "$0")/common"
+. "$(dirname "$0")/defaults"
+
+prepareIcarusAppFolders() {
+  mkdir -p "$install_path"
+}
+
+prepareIcarusDataFolders() {
+  if [ -n "$CLEANUP_CRON" ]; then
+    debug "creating prune folder $data_path/Saved/PlayerData/DedicatedServer/$CLEANUP_PRUNE_FOLDER"
+    mkdir -p "$data_path/Saved/PlayerData/DedicatedServer/$CLEANUP_PRUNE_FOLDER"
+  fi
+}
+
+bootstrapWine() {
+  info "bootstrap wine"
+  export WINEPREFIX=$WINEPREFIX
+  export WINEARCH=$WINEARCH
+  export WINEPATH=$WINEPATH
+  export WINEDEBUG=$WINEDEBUG
+
+  debug "winecfg"
+  winecfg -v win10 >/dev/null 2>&1
+  debug "wineboot"
+  wineboot --init >/dev/null 2>&1
+
+  info "wine version: $(wine64 --version)"
+
+  info "wine bootstrap finished"
+}
+
+initCrontab() {
+  crontab=$(mktemp)
+
+  if [ -n "$UPDATE_CRON" ]; then
+    debug "creating cron for update checks (schedule: $UPDATE_CRON)"
+    echo "$UPDATE_CRON supervisorctl start icarus-updater >/dev/null 2>&1" >>"$crontab"
+  fi
+
+  if [ -n "$CLEANUP_CRON" ]; then
+    debug "creating cron for cleanup (schedule: $CLEANUP_CRON)"
+    echo "$CLEANUP_CRON supervisorctl start icarus-cleanup >/dev/null 2>&1" >>"$crontab"
+  fi
+
+  crontab "$crontab"
+  rm -f "$crontab"
+}
+
+updateOrCreateIcarusEngineConfig() {
+  info "Setting AsyncTaskTimeout in Engine.ini to echo ${ASYNC_TASK_TIMEOUT}"
+  if [[ ! -e ${config_path}/Engine.ini ]]; then
+    mkdir -p ${config_path}
+    touch ${config_path}/Engine.ini
+
+    cat >${config_path}/Engine.ini <<EOF
+[OnlineSubsystemSteam]
+AsyncTaskTimeout=$ASYNC_TASK_TIMEOUT
+EOF
+  fi
+
+  sedCommand='/AsyncTaskTimeout=/c\AsyncTaskTimeout='${ASYNC_TASK_TIMEOUT}
+  sed -i "${sedCommand}" ${config_path}/Engine.ini
+}
+
+updateOrCreateIcarusServerSettings() {
+  if [[ ! -e ${config_path}/ServerSettings.ini ]]; then
+    mkdir -p ${config_path}
+    touch ${config_path}/ServerSettings.ini
+
+    cat >${config_path}/ServerSettings.ini <<EOF
+[/Script/Icarus.DedicatedServerSettings]
+SessionName=$SERVER_NAME
+MaxPlayers=8
+JoinPassword=
+AdminPassword=
+ShutdownIfNotJoinedFor=300.000000
+ShutdownIfEmptyFor=60.000000
+AllowNonAdminsToLaunchProspects=True
+AllowNonAdminsToDeleteProspects=False
+ResumeProspect=True
+LoadProspect=
+CreateProspect=
+LastProspectName=
+EOF
+  fi
+
+  sed -i "/SessionName=/c\SessionName=${SERVER_NAME}" ${config_path}/ServerSettings.ini
+
+  if [[ -n "$SERVER_PASSWORD" ]]; then
+    sed -i "/JoinPassword=/c\JoinPassword=${SERVER_PASSWORD}" ${config_path}/ServerSettings.ini
+  fi
+
+  if [[ -n "$SERVER_MAX_PLAYERS" ]]; then
+    sed -i "/MaxPlayers=/c\MaxPlayers=${SERVER_MAX_PLAYERS}" ${config_path}/ServerSettings.ini
+  fi
+
+  if [[ -n "$SERVER_ADMIN_PASSWORD" ]]; then
+    sed -i "/AdminPassword=/c\AdminPassword=${SERVER_ADMIN_PASSWORD}" ${config_path}/ServerSettings.ini
+  fi
+
+  if [[ -n "$SERVER_SHUTDOWN_IF_NOT_JOINED" ]]; then
+    sed -i "/ShutdownIfNotJoinedFor=/c\ShutdownIfNotJoinedFor=${SERVER_SHUTDOWN_IF_NOT_JOINED}" ${config_path}/ServerSettings.ini
+  fi
+
+  if [[ -n "$SERVER_SHUTDOWN_IF_EMPTY" ]]; then
+    sed -i "/ShutdownIfEmptyFor=/c\ShutdownIfEmptyFor=${SERVER_SHUTDOWN_IF_EMPTY}" ${config_path}/ServerSettings.ini
+  fi
+
+  if [[ -n "$SERVER_ALLOW_NON_ADMINS_LAUNCH" ]]; then
+    sed -i "/AllowNonAdminsToLaunchProspects=/c\AllowNonAdminsToLaunchProspects=${SERVER_ALLOW_NON_ADMINS_LAUNCH}" ${config_path}/ServerSettings.ini
+  fi
+
+  if [[ -n "$SERVER_ALLOW_NON_ADMINS_DELETE" ]]; then
+    sed -i "/AllowNonAdminsToDeleteProspects=/c\AllowNonAdminsToDeleteProspects=${SERVER_ALLOW_NON_ADMINS_DELETE}" ${config_path}/ServerSettings.ini
+  fi
+
+  if [[ -n "$SERVER_RESUME_PROSPECT" ]]; then
+    sed -i "/ResumeProspect=/c\ResumeProspect=${SERVER_RESUME_PROSPECT}" ${config_path}/ServerSettings.ini
+  fi
+
+  sed -i "/LoadProspect=/c\LoadProspect=" ${config_path}/ServerSettings.ini
+}
+

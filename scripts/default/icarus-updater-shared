@@ -5,12 +5,6 @@
 pidfile=$icarus_updater_pidfile
 latest_version=-1
 
-main() {
-  info "Running icarus-updater"
-  update
-  info "icarus-updater complete"
-}
-
 update() {
   if [ -f "$pidfile" ]; then
     info "Found existing PID file - checking process"
@@ -129,5 +123,3 @@ shutdown() {
   debug "Received signal to shut down icarus-updater"
   clear_lock "$pidfile"
 }
-
-main

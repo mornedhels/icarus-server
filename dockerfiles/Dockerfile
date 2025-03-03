@@ -33,8 +33,8 @@ RUN mkdir -p /usr/local/etc /var/log/supervisor /var/run/icarus /usr/local/etc/s
     && apt autoremove --purge && apt clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY ./supervisord.conf /etc/supervisor/supervisord.conf
-COPY --chmod=755 ./scripts/* /usr/local/etc/icarus/
+COPY ../supervisord.conf /etc/supervisor/supervisord.conf
+COPY --chmod=755 ../scripts/default/* ../scripts/wine/* /usr/local/etc/icarus/
 
 WORKDIR /usr/local/etc/icarus
 CMD ["/usr/local/etc/icarus/bootstrap"]

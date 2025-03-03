@@ -1,21 +1,18 @@
-version: "3"
 services:
   icarus:
     build:
       context: .
-      dockerfile: dockerfiles/Dockerfile
-      args:
-        WINE_BRANCH: staging
-    image: mornedhels/icarus-server:dev
-    container_name: icarus
+      dockerfile: dockerfiles/proton.Dockerfile
+    image: mornedhels/icarus-server:dev-proton
+    container_name: icarus-test
     hostname: icarus
     restart: unless-stopped
     stop_grace_period: 90s
     ports:
-      - "17777:17777/udp"
-      - "27015:27015/udp"
+      - "17780:17780/udp"
+      - "27020:27020/udp"
     volumes:
-      - ./data:/home/icarus/drive_c/icarus
+      - ./data:/home/icarus/.steam/drive_c/icarus
       - ./game:/opt/icarus
     environment:
       - SERVER_NAME=MornedhelsTest
@@ -24,5 +21,5 @@ services:
       - PUID=4711
       - PGID=4711
       - UPDATE_CRON=*/30 * * * *
-      - CLEANUP_CRON=*/10 * * * *
+      - BACKUP_CRON=*/10 * * * *
       - log_level=50

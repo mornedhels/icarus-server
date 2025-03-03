@@ -1,0 +1,20 @@
+#!/bin/bash
+. "$(dirname "$0")/common"
+. "$(dirname "$0")/defaults"
+. "$(dirname "$0")/icarus-bootstrap-shared"
+
+main() {
+  info "Running icarus-bootstrap"
+  prepareIcarusAppFolders
+  prepareIcarusDataFolders
+  updateOrCreateIcarusEngineConfig
+  updateOrCreateIcarusServerSettings
+
+  # no proton bootstrap needed
+
+  initCrontab
+  supervisorctl start icarus-updater
+  info "Bootstrap complete"
+}
+
+main
