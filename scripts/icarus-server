@@ -10,13 +10,16 @@ cd "$install_path" || fatal "Could not cd $install_path"
 icarus_server="$install_path/$icarus_binary_path"
 
 main() {
-  wait_for_server_download
-  run_server
+  waitForServerDownload
+  runServer
 }
 
-wait_for_server_download() {
+waitForServerDownload() {
   while :; do
     if [ -f "$icarus_server" ]; then
+      if ! supervisorctl status icarus-updater | grep -q RUNNING; then
+        supervisorctl start icarus-updater
+      fi
       break
     else
       debug "icarus Server is not yet downloaded - waiting"
@@ -25,7 +28,7 @@ wait_for_server_download() {
   done
 }
 
-run_server() {
+runServer() {
   info "Running icarus-server"
   debug "Server config -SteamServerName=$SERVER_NAME -PORT=$SERVER_PORT -QueryPort=$SERVER_QUERYPORT"
 
@@ -35,7 +38,7 @@ run_server() {
   export WINEDEBUG=$WINEDEBUG
 
   chmod +x "$icarus_server"
-  wine64 "$icarus_server" -Log -UserDir='C:\icarus' -SteamServerName="$SERVER_NAME" -PORT="$SERVER_PORT" -QueryPort="$SERVER_QUERYPORT" &
+  wine "$icarus_server" -Log -UserDir='C:\icarus' -SteamServerName="$SERVER_NAME" -PORT="$SERVER_PORT" -QueryPort="$SERVER_QUERYPORT" &
   icarus_server_pid=$!
   echo $icarus_server_pid >"$icarus_server_pidfile"
 
@@ -48,7 +51,7 @@ run_server() {
 }
 
 cleanup() {
-  clear_lock "$icarus_server_pidfile"
+  clearLock "$icarus_server_pidfile"
 }
 
 shutdown() {

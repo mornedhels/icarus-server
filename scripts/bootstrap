@@ -3,13 +3,13 @@
 . "$(dirname "$0")/defaults"
 
 main() {
-  apply_permissions
-  setup_syslog
+  applyPermissions
+  setupSyslog
   exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 }
 
 # Apply user id and group id
-apply_permissions() {
+applyPermissions() {
   info "Setting uid:gid of icarus to $PUID:$PGID"
   groupmod -g "${PGID}" -o icarus
   usermod -u "${PUID}" -o icarus
@@ -23,7 +23,7 @@ apply_permissions() {
 }
 
 # Configure syslog
-setup_syslog() {
+setupSyslog() {
   info "Setting up syslogd - logging to stdout"
 
   cat >/etc/rsyslog.d/stdout.conf <<EOF

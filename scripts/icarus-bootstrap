@@ -8,10 +8,30 @@ main() {
   prepareIcarusDataFolders
   updateOrCreateIcarusEngineConfig
   updateOrCreateIcarusServerSettings
-  initCrontab
+  prepareSteamA2sPythonLibrary
   bootstrapWine
-  supervisorctl start icarus-updater
+  initCrontab
+  bootstrapHook
+
+  if [ "$UPDATE_SKIP" = true ]; then
+    info "UPDATE_SKIP: skipping update, starting server directly"
+    supervisorctl start icarus-server
+  else
+    supervisorctl start icarus-updater
+  fi
+
   info "Bootstrap complete"
+}
+
+prepareSteamA2sPythonLibrary() {
+  pip3 install python-a2s==1.3.0 --break-system-packages
+}
+
+bootstrapHook() {
+  if [ -n "$BOOTSTRAP_HOOK" ]; then
+    info "Running bootstrap hook: $BOOTSTRAP_HOOK"
+    eval "$BOOTSTRAP_HOOK"
+  fi
 }
 
 prepareIcarusAppFolders() {
@@ -37,7 +57,7 @@ bootstrapWine() {
   debug "wineboot"
   wineboot --init >/dev/null 2>&1
 
-  info "wine version: $(wine64 --version)"
+  info "wine version: $(wine --version)"
 
   info "wine bootstrap finished"
 }
