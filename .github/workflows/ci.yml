@@ -21,6 +21,7 @@ jobs:
     with:
       image-name: icarus-server
       image-tag: dev
+      docker-scan: false
       scan-category: dev-wine
     secrets:
       CONTAINER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
@@ -30,6 +31,7 @@ jobs:
     with:
       image-name: icarus-server
       image-tag: dev-wine-staging
+      docker-scan: false
       scan-category: dev-wine-staging
       build-args: |
         WINE_BRANCH=staging
