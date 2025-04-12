@@ -17,12 +17,13 @@ main() {
 waitForServerDownload() {
   while :; do
     if [ -f "$icarus_server" ]; then
-      if ! supervisorctl status icarus-updater | grep -q RUNNING; then
-        supervisorctl start icarus-updater
-      fi
       break
     else
-      debug "icarus Server is not yet downloaded - waiting"
+      info "icarus server is not yet downloaded - waiting"
+      if ! supervisorctl status icarus-updater | grep -q RUNNING; then
+        info "icarus-updater is not running - starting it"
+        supervisorctl start icarus-updater
+      fi
       sleep 7
     fi
   done
