@@ -13,8 +13,8 @@ jobs:
       image-name: icarus-server
       scan-category: wine-latest
       image-tag: |
-        ${{ github.event.release.tag_name }}
         latest
+        ${{ github.event.release.tag_name }}
     secrets:
       CONTAINER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
