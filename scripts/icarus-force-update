@@ -5,6 +5,10 @@
 main() {
   info "Force Icarus update"
   rm $version_file_path
+
+  debug "Removing $install_path/$steamapp_path"
+  rm -rf $install_path/$steamapp_path
+
   supervisorctl start icarus-updater
 }
 

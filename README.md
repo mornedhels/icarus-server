@@ -104,6 +104,9 @@ services:
     volumes:
       - ./data:/home/icarus/drive_c/icarus
       - ./game:/opt/icarus
+    # only add ntsync device if your kernel supports it (6.14 or newer)
+    devices:
+      - /dev/ntsync:/dev/ntsync
     environment:
       - SERVER_NAME=ICARUS Server
       - SERVER_PASSWORD=secret
@@ -132,6 +135,9 @@ services:
     volumes:
       - data:/home/icarus/drive_c/icarus
       - game:/opt/icarus
+    # only add ntsync device if your kernel supports it (6.14 or newer)
+    devices:
+      - /dev/ntsync:/dev/ntsync
     environment:
       - SERVER_NAME=ICARUS Server
       - SERVER_PASSWORD=secret

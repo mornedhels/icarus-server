@@ -43,10 +43,16 @@ doUpdate() {
   verifyCpuMhz
   downloadIcarus
   if ! downloadIcarus; then
-    warn "Download of ICARUS server failed - aborting update"
-    supervisorctl start icarus-server
-    clearLock "$pidfile"
-    return
+    warn "Download of ICARUS server failed - retry"
+    debug "Removing $install_path/$steamapp_path"
+    rm -rf $install_path/$steamapp_path
+
+    if ! downloadIcarus; then
+      warn "Download of ICARUS server failed - aborting update"
+      supervisorctl start icarus-server
+      clearLock "$pidfile"
+      return
+    fi
   fi
   setCurrentVersion
   supervisorctl start icarus-server
