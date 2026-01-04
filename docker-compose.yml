@@ -16,6 +16,8 @@ services:
     volumes:
       - ./data:/home/icarus/drive_c/icarus
       - ./game:/opt/icarus
+    devices:
+      - /dev/ntsync:/dev/ntsync
     environment:
       - SERVER_NAME=MornedhelsTest
       - SERVER_PORT=17777
